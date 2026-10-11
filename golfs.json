@@ -1,0 +1,871 @@
+{
+  "version": 2,
+  "unite": "m",
+  "note": "Coordonnees = accueil du club (source : Google Places). Pars, index et distances : 1golf.eu (annuaire, pas le site officiel des clubs). Les distances sont en metres : unite deduite, la source ne la precise pas, mais elle est coherente avec les longueurs en metres de Mont-de-Marsan sur la meme source. Les positions tee/green de chaque trou seront ajoutees au fur et a mesure des releves sur place. Artiguelouve : carte de score officielle du golf (photo fournie par l'utilisateur), qui remplace les totaux de 1golf (ecarts constates : 1golf donnait par 70 et 5457 m en jaune, la carte indique par 71 et 5446 m). Mont-de-Marsan : site officiel du club ; la page donne cinq distances par trou sans nommer les departs (numerotes ici du plus long au plus court) et sans preciser l'unite (metres, coherent avec le 5880 m de distance maximale publie par ailleurs).",
+  "golfs": [
+    {
+      "id": "mont-de-marsan",
+      "nom": "Golf de Mont-de-Marsan (Saint-Avit)",
+      "adresse": "1419 Route de Pessourdat, 40090 Saint-Avit",
+      "lat": 43.94142,
+      "lng": -0.42006,
+      "nbTrous": 18,
+      "source": "https://golfmontdemarsan.com/fr/parcours (site officiel du club)",
+      "carteScore": "https://golfmontdemarsan.com/models/golfcourse/assets/a//a93d5dd94c1a6_carte-score.jpg",
+      "trous": [
+        {
+          "n": 1,
+          "par": 4,
+          "hcp": 18,
+          "distances": {
+            "repère 1": 339,
+            "repère 2": 332,
+            "repère 3": 280,
+            "repère 4": 273,
+            "repère 5": 223
+          }
+        },
+        {
+          "n": 2,
+          "par": 3,
+          "hcp": 8,
+          "distances": {
+            "repère 1": 176,
+            "repère 2": 173,
+            "repère 3": 131,
+            "repère 4": 125,
+            "repère 5": 94
+          }
+        },
+        {
+          "n": 3,
+          "par": 4,
+          "hcp": 6,
+          "distances": {
+            "repère 1": 340,
+            "repère 2": 334,
+            "repère 3": 304,
+            "repère 4": 281,
+            "repère 5": 276
+          }
+        },
+        {
+          "n": 4,
+          "par": 5,
+          "hcp": 4,
+          "distances": {
+            "repère 1": 470,
+            "repère 2": 438,
+            "repère 3": 433,
+            "repère 4": 393,
+            "repère 5": 364
+          }
+        },
+        {
+          "n": 5,
+          "par": 4,
+          "hcp": 10,
+          "distances": {
+            "repère 1": 315,
+            "repère 2": 305,
+            "repère 3": 270,
+            "repère 4": 265,
+            "repère 5": 237
+          }
+        },
+        {
+          "n": 6,
+          "par": 3,
+          "hcp": 16,
+          "distances": {
+            "repère 1": 152,
+            "repère 2": 146,
+            "repère 3": 123,
+            "repère 4": 119,
+            "repère 5": 98
+          }
+        },
+        {
+          "n": 7,
+          "par": 4,
+          "hcp": 2,
+          "distances": {
+            "repère 1": 380,
+            "repère 2": 361,
+            "repère 3": 358,
+            "repère 4": 336,
+            "repère 5": 307
+          }
+        },
+        {
+          "n": 8,
+          "par": 4,
+          "hcp": 14,
+          "distances": {
+            "repère 1": 338,
+            "repère 2": 334,
+            "repère 3": 299,
+            "repère 4": 275,
+            "repère 5": 270
+          }
+        },
+        {
+          "n": 9,
+          "par": 4,
+          "hcp": 12,
+          "distances": {
+            "repère 1": 348,
+            "repère 2": 343,
+            "repère 3": 290,
+            "repère 4": 261,
+            "repère 5": 257
+          }
+        },
+        {
+          "n": 10,
+          "par": 3,
+          "hcp": 9,
+          "distances": {
+            "repère 1": 168,
+            "repère 2": 163,
+            "repère 3": 152,
+            "repère 4": 144,
+            "repère 5": 112
+          }
+        },
+        {
+          "n": 11,
+          "par": 4,
+          "hcp": 15,
+          "distances": {
+            "repère 1": 337,
+            "repère 2": 328,
+            "repère 3": 297,
+            "repère 4": 267,
+            "repère 5": 262
+          }
+        },
+        {
+          "n": 12,
+          "par": 5,
+          "hcp": 13,
+          "distances": {
+            "repère 1": 473,
+            "repère 2": 468,
+            "repère 3": 444,
+            "repère 4": 405,
+            "repère 5": 363
+          }
+        },
+        {
+          "n": 13,
+          "par": 4,
+          "hcp": 17,
+          "distances": {
+            "repère 1": 322,
+            "repère 2": 316,
+            "repère 3": 284,
+            "repère 4": 272,
+            "repère 5": 234
+          }
+        },
+        {
+          "n": 14,
+          "par": 4,
+          "hcp": 3,
+          "distances": {
+            "repère 1": 379,
+            "repère 2": 373,
+            "repère 3": 329,
+            "repère 4": 286,
+            "repère 5": 263
+          }
+        },
+        {
+          "n": 15,
+          "par": 4,
+          "hcp": 1,
+          "distances": {
+            "repère 1": 379,
+            "repère 2": 369,
+            "repère 3": 361,
+            "repère 4": 319,
+            "repère 5": 283
+          }
+        },
+        {
+          "n": 16,
+          "par": 3,
+          "hcp": 5,
+          "distances": {
+            "repère 1": 153,
+            "repère 2": 150,
+            "repère 3": 124,
+            "repère 4": 113,
+            "repère 5": 67
+          }
+        },
+        {
+          "n": 17,
+          "par": 4,
+          "hcp": 7,
+          "distances": {
+            "repère 1": 337,
+            "repère 2": 327,
+            "repère 3": 320,
+            "repère 4": 278,
+            "repère 5": 237
+          }
+        },
+        {
+          "n": 18,
+          "par": 5,
+          "hcp": 11,
+          "distances": {
+            "repère 1": 474,
+            "repère 2": 456,
+            "repère 3": 433,
+            "repère 4": 402,
+            "repère 5": 396
+          }
+        }
+      ]
+    },
+    {
+      "id": "hossegor",
+      "nom": "Golf d'Hossegor",
+      "adresse": "333 Avenue du Golf, 40150 Soorts-Hossegor",
+      "lat": 43.65748,
+      "lng": -1.42526,
+      "nbTrous": 18,
+      "source": "https://www.1golf.eu/en/club/golf-club-d-hossegor/scorecard/",
+      "trous": [
+        {
+          "n": 1,
+          "par": 5,
+          "hcp": 15,
+          "distances": {
+            "jaune": 421,
+            "rouge": 356,
+            "blanc": 434,
+            "noir": 434,
+            "bleu": 389,
+            "orange": 220
+          }
+        },
+        {
+          "n": 2,
+          "par": 3,
+          "hcp": 17,
+          "distances": {
+            "jaune": 141,
+            "rouge": 102,
+            "blanc": 141,
+            "noir": 149,
+            "bleu": 126,
+            "orange": 97
+          }
+        },
+        {
+          "n": 3,
+          "par": 4,
+          "hcp": 9,
+          "distances": {
+            "jaune": 304,
+            "rouge": 259,
+            "blanc": 323,
+            "noir": 323,
+            "bleu": 277,
+            "orange": 135
+          }
+        },
+        {
+          "n": 4,
+          "par": 5,
+          "hcp": 11,
+          "distances": {
+            "jaune": 459,
+            "rouge": 358,
+            "blanc": 469,
+            "noir": 481,
+            "bleu": 399,
+            "orange": 220
+          }
+        },
+        {
+          "n": 5,
+          "par": 3,
+          "hcp": 7,
+          "distances": {
+            "jaune": 166,
+            "rouge": 120,
+            "blanc": 188,
+            "noir": 198,
+            "bleu": 144,
+            "orange": 90
+          }
+        },
+        {
+          "n": 6,
+          "par": 4,
+          "hcp": 1,
+          "distances": {
+            "jaune": 363,
+            "rouge": 314,
+            "blanc": 395,
+            "noir": 405,
+            "bleu": 336,
+            "orange": 220
+          }
+        },
+        {
+          "n": 7,
+          "par": 4,
+          "hcp": 5,
+          "distances": {
+            "jaune": 354,
+            "rouge": 299,
+            "blanc": 366,
+            "noir": 378,
+            "bleu": 314,
+            "orange": 135
+          }
+        },
+        {
+          "n": 8,
+          "par": 3,
+          "hcp": 13,
+          "distances": {
+            "jaune": 146,
+            "rouge": 112,
+            "blanc": 170,
+            "noir": 181,
+            "bleu": 119,
+            "orange": 90
+          }
+        },
+        {
+          "n": 9,
+          "par": 4,
+          "hcp": 3,
+          "distances": {
+            "jaune": 345,
+            "rouge": 294,
+            "blanc": 373,
+            "noir": 381,
+            "bleu": 333,
+            "orange": 135
+          }
+        },
+        {
+          "n": 10,
+          "par": 4,
+          "hcp": 4,
+          "distances": {
+            "jaune": 343,
+            "rouge": 313,
+            "blanc": 374,
+            "noir": 381,
+            "bleu": 333,
+            "orange": 135
+          }
+        },
+        {
+          "n": 11,
+          "par": 4,
+          "hcp": 8,
+          "distances": {
+            "jaune": 321,
+            "rouge": 291,
+            "blanc": 358,
+            "noir": 381,
+            "bleu": 301,
+            "orange": 135
+          }
+        },
+        {
+          "n": 12,
+          "par": 5,
+          "hcp": 18,
+          "distances": {
+            "jaune": 411,
+            "rouge": 350,
+            "blanc": 429,
+            "noir": 429,
+            "bleu": 375,
+            "orange": 220
+          }
+        },
+        {
+          "n": 13,
+          "par": 4,
+          "hcp": 6,
+          "distances": {
+            "jaune": 326,
+            "rouge": 294,
+            "blanc": 356,
+            "noir": 379,
+            "bleu": 313,
+            "orange": 135
+          }
+        },
+        {
+          "n": 14,
+          "par": 3,
+          "hcp": 14,
+          "distances": {
+            "jaune": 123,
+            "rouge": 104,
+            "blanc": 141,
+            "noir": 149,
+            "bleu": 118,
+            "orange": 83
+          }
+        },
+        {
+          "n": 15,
+          "par": 5,
+          "hcp": 12,
+          "distances": {
+            "jaune": 421,
+            "rouge": 362,
+            "blanc": 435,
+            "noir": 435,
+            "bleu": 369,
+            "orange": 220
+          }
+        },
+        {
+          "n": 16,
+          "par": 4,
+          "hcp": 2,
+          "distances": {
+            "jaune": 348,
+            "rouge": 298,
+            "blanc": 368,
+            "noir": 380,
+            "bleu": 316,
+            "orange": 220
+          }
+        },
+        {
+          "n": 17,
+          "par": 3,
+          "hcp": 16,
+          "distances": {
+            "jaune": 147,
+            "rouge": 123,
+            "blanc": 160,
+            "noir": 171,
+            "bleu": 131,
+            "orange": 90
+          }
+        },
+        {
+          "n": 18,
+          "par": 4,
+          "hcp": 10,
+          "distances": {
+            "jaune": 303,
+            "rouge": 263,
+            "blanc": 317,
+            "noir": 322,
+            "bleu": 281,
+            "orange": 90
+          }
+        }
+      ]
+    },
+    {
+      "id": "ilbarritz",
+      "nom": "Golf d'Ilbarritz (Bidart)",
+      "adresse": "Avenue du Château, 64210 Bidart",
+      "lat": 43.45762,
+      "lng": -1.57644,
+      "nbTrous": 9,
+      "source": "https://www.1golf.eu/en/club/golf-d-ilbarritz/scorecard/",
+      "trous": [
+        {
+          "n": 1,
+          "par": 4,
+          "hcp": 8,
+          "distances": {
+            "jaune": 274,
+            "rouge": 185,
+            "blanc": 306,
+            "bleu": 232
+          }
+        },
+        {
+          "n": 2,
+          "par": 4,
+          "hcp": 12,
+          "distances": {
+            "jaune": 260,
+            "rouge": 212,
+            "blanc": 282,
+            "bleu": 227
+          }
+        },
+        {
+          "n": 3,
+          "par": 3,
+          "hcp": 14,
+          "distances": {
+            "jaune": 101,
+            "rouge": 70,
+            "blanc": 101,
+            "bleu": 101
+          }
+        },
+        {
+          "n": 4,
+          "par": 3,
+          "hcp": 18,
+          "distances": {
+            "jaune": 101,
+            "rouge": 76,
+            "blanc": 116,
+            "bleu": 91
+          }
+        },
+        {
+          "n": 5,
+          "par": 3,
+          "hcp": 2,
+          "distances": {
+            "jaune": 177,
+            "rouge": 142,
+            "blanc": 201,
+            "bleu": 160
+          }
+        },
+        {
+          "n": 6,
+          "par": 3,
+          "hcp": 4,
+          "distances": {
+            "jaune": 161,
+            "rouge": 124,
+            "blanc": 181,
+            "bleu": 141
+          }
+        },
+        {
+          "n": 7,
+          "par": 4,
+          "hcp": 10,
+          "distances": {
+            "jaune": 321,
+            "rouge": 278,
+            "blanc": 347,
+            "bleu": 295
+          }
+        },
+        {
+          "n": 8,
+          "par": 5,
+          "hcp": 6,
+          "distances": {
+            "jaune": 390,
+            "rouge": 329,
+            "blanc": 421,
+            "bleu": 357
+          }
+        },
+        {
+          "n": 9,
+          "par": 3,
+          "hcp": 16,
+          "distances": {
+            "jaune": 89,
+            "rouge": 74,
+            "blanc": 115,
+            "bleu": 74
+          }
+        }
+      ]
+    },
+    {
+      "id": "artiguelouve",
+      "nom": "Golf d'Artiguelouve (Pau Blue Green)",
+      "adresse": "Domaine de Saint-Michel, 64230 Artiguelouve",
+      "lat": 43.31732,
+      "lng": -0.45778,
+      "nbTrous": 18,
+      "source": "Carte de score officielle du golf (photo fournie par l'utilisateur)",
+      "ratings": {
+        "blanc": {
+          "sss": 70.3,
+          "slope": 124
+        },
+        "jaune": {
+          "sss": 69.4,
+          "slope": 117
+        },
+        "bleu": {
+          "sss": 71.3,
+          "slope": 120
+        },
+        "rouge": {
+          "sss": 70.3,
+          "slope": 117
+        }
+      },
+      "trous": [
+        {
+          "n": 1,
+          "par": 5,
+          "hcp": 16,
+          "greenProfondeur": 26,
+          "distances": {
+            "blanc": 436,
+            "jaune": 419,
+            "bleu": 380,
+            "rouge": 307,
+            "violet": 315,
+            "orange": 193
+          }
+        },
+        {
+          "n": 2,
+          "par": 3,
+          "hcp": 12,
+          "greenProfondeur": 20,
+          "distances": {
+            "blanc": 150,
+            "jaune": 146,
+            "bleu": 136,
+            "rouge": 125,
+            "violet": 120,
+            "orange": 115
+          }
+        },
+        {
+          "n": 3,
+          "par": 5,
+          "hcp": 14,
+          "greenProfondeur": 30,
+          "distances": {
+            "blanc": 451,
+            "jaune": 433,
+            "bleu": 399,
+            "rouge": 388,
+            "violet": 310,
+            "orange": 191
+          }
+        },
+        {
+          "n": 4,
+          "par": 4,
+          "hcp": 6,
+          "greenProfondeur": 35,
+          "distances": {
+            "blanc": 339,
+            "jaune": 308,
+            "bleu": 302,
+            "rouge": 285,
+            "violet": 265,
+            "orange": 163
+          }
+        },
+        {
+          "n": 5,
+          "par": 4,
+          "hcp": 10,
+          "greenProfondeur": 35,
+          "distances": {
+            "blanc": 346,
+            "jaune": 320,
+            "bleu": 274,
+            "rouge": 245,
+            "violet": 210,
+            "orange": 163
+          }
+        },
+        {
+          "n": 6,
+          "par": 4,
+          "hcp": 2,
+          "greenProfondeur": 30,
+          "distances": {
+            "blanc": 341,
+            "jaune": 305,
+            "bleu": 283,
+            "rouge": 277,
+            "violet": 275,
+            "orange": 161
+          }
+        },
+        {
+          "n": 7,
+          "par": 3,
+          "hcp": 18,
+          "greenProfondeur": 32,
+          "distances": {
+            "blanc": 164,
+            "jaune": 155,
+            "bleu": 141,
+            "rouge": 124,
+            "violet": 115,
+            "orange": 105
+          }
+        },
+        {
+          "n": 8,
+          "par": 4,
+          "hcp": 4,
+          "greenProfondeur": 32,
+          "distances": {
+            "blanc": 392,
+            "jaune": 348,
+            "bleu": 332,
+            "rouge": 300,
+            "violet": 270,
+            "orange": 163
+          }
+        },
+        {
+          "n": 9,
+          "par": 5,
+          "hcp": 8,
+          "greenProfondeur": 25,
+          "distances": {
+            "blanc": 500,
+            "jaune": 482,
+            "bleu": 411,
+            "rouge": 400,
+            "violet": 335,
+            "orange": 190
+          }
+        },
+        {
+          "n": 10,
+          "par": 3,
+          "hcp": 17,
+          "greenProfondeur": 25,
+          "distances": {
+            "blanc": 160,
+            "jaune": 147,
+            "bleu": 101,
+            "rouge": 95,
+            "violet": 80,
+            "orange": 95
+          }
+        },
+        {
+          "n": 11,
+          "par": 4,
+          "hcp": 5,
+          "greenProfondeur": 35,
+          "distances": {
+            "blanc": 301,
+            "jaune": 290,
+            "bleu": 283,
+            "rouge": 277,
+            "violet": 245,
+            "orange": 163
+          }
+        },
+        {
+          "n": 12,
+          "par": 3,
+          "hcp": 9,
+          "greenProfondeur": 25,
+          "distances": {
+            "blanc": 182,
+            "jaune": 171,
+            "bleu": 146,
+            "rouge": 133,
+            "violet": 120,
+            "orange": 110
+          }
+        },
+        {
+          "n": 13,
+          "par": 4,
+          "hcp": 1,
+          "greenProfondeur": 40,
+          "distances": {
+            "blanc": 375,
+            "jaune": 363,
+            "bleu": 320,
+            "rouge": 308,
+            "violet": 290,
+            "orange": 162
+          }
+        },
+        {
+          "n": 14,
+          "par": 4,
+          "hcp": 3,
+          "greenProfondeur": 40,
+          "distances": {
+            "blanc": 385,
+            "jaune": 380,
+            "bleu": 329,
+            "rouge": 310,
+            "violet": 285,
+            "orange": 161
+          }
+        },
+        {
+          "n": 15,
+          "par": 4,
+          "hcp": 7,
+          "greenProfondeur": 30,
+          "distances": {
+            "blanc": 335,
+            "jaune": 330,
+            "bleu": 295,
+            "rouge": 287,
+            "violet": 265,
+            "orange": 161
+          }
+        },
+        {
+          "n": 16,
+          "par": 4,
+          "hcp": 11,
+          "greenProfondeur": 27,
+          "distances": {
+            "blanc": 292,
+            "jaune": 290,
+            "bleu": 255,
+            "rouge": 252,
+            "violet": 240,
+            "orange": 161
+          }
+        },
+        {
+          "n": 17,
+          "par": 3,
+          "hcp": 15,
+          "greenProfondeur": 22,
+          "distances": {
+            "blanc": 132,
+            "jaune": 130,
+            "bleu": 115,
+            "rouge": 110,
+            "violet": 100,
+            "orange": 85
+          }
+        },
+        {
+          "n": 18,
+          "par": 5,
+          "hcp": 13,
+          "greenProfondeur": 37,
+          "distances": {
+            "blanc": 449,
+            "jaune": 429,
+            "bleu": 384,
+            "rouge": 375,
+            "violet": 320,
+            "orange": 192
+          }
+        }
+      ]
+    }
+  ]
+}
