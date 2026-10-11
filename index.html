@@ -13,32 +13,28 @@
     --creme: #F4EFE6;
     --creme-fonce: #E9E1D2;
     --sauge: #7D8F7A;
-    --sauge-fonce: #5C6E59;
-    --terracotta: #C0734F;
+    --sauge-fonce: #566852;
+    --terracotta: #B0593A;
     --encre: #2F2B26;
-    --gris: #8A8377;
+    --gris: #6F695F;
     --blanc: #FBF9F4;
     --radius: 14px;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     background: var(--creme);
     color: var(--encre);
-    padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+    padding: env(safe-area-inset-top) 16px calc(84px + env(safe-area-inset-bottom));
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
   }
-  header {
-    padding: 22px 4px 14px;
-  }
-  h1 {
-    font-family: Georgia, "Times New Roman", serif;
-    font-weight: 400;
-    font-size: 28px;
-    letter-spacing: -0.2px;
-  }
-  .sous-titre { color: var(--gris); font-size: 14px; margin-top: 4px; }
+  main { max-width: 560px; margin: 0 auto; }
+  h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 28px; letter-spacing: -0.2px; }
+  h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 19px; margin-bottom: 12px; }
+  header.page { padding: 22px 4px 14px; }
+  .sous { color: var(--gris); font-size: 14px; margin-top: 4px; }
 
   .carte {
     background: var(--blanc);
@@ -47,348 +43,659 @@
     margin-bottom: 14px;
     box-shadow: 0 1px 2px rgba(47,43,38,0.06);
   }
+  .carte.reprise { border-left: 4px solid var(--sauge-fonce); }
   label { font-size: 13px; color: var(--gris); display: block; margin-bottom: 6px; }
-  input[type="text"], input[type="number"] {
+  input[type="text"], input[type="number"], select, textarea {
     width: 100%;
+    font: inherit;
     font-size: 17px;
     padding: 11px 12px;
     border: 1px solid var(--creme-fonce);
     border-radius: 10px;
     background: var(--creme);
     color: var(--encre);
-    font-family: inherit;
   }
-  input:focus { outline: 2px solid var(--sauge); border-color: transparent; }
+  textarea { resize: vertical; min-height: 80px; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--sauge); border-color: transparent; }
+  .champ + .champ { margin-top: 12px; }
+  .rangee { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .rangee > * { flex: 1; }
 
-  .trou-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+  .btn { padding: 13px 14px; border-radius: 12px; border: none; font: inherit; font-size: 15px; cursor: pointer; }
+  .btn.principal { background: var(--sauge-fonce); color: #fff; }
+  .btn.secondaire { background: var(--creme-fonce); color: var(--encre); }
+  .btn.danger { background: transparent; color: var(--terracotta); border: 1px solid var(--terracotta); }
+  .btn.plein { width: 100%; }
+  .lien { background: none; border: none; font: inherit; font-size: 13px; color: var(--sauge-fonce); text-decoration: underline; padding: 6px 2px; cursor: pointer; }
+  .lien.danger { color: var(--terracotta); }
+  .note { font-size: 13px; color: var(--gris); margin-top: 8px; line-height: 1.4; }
+
+  .segment { display: flex; gap: 6px; }
+  .segment button {
+    flex: 1; padding: 11px 0; border: 1px solid var(--creme-fonce); background: var(--creme);
+    border-radius: 10px; font: inherit; font-size: 16px; color: var(--encre); cursor: pointer;
   }
-  .btn-nav {
-    width: 46px; height: 46px;
-    border-radius: 50%;
-    border: none;
-    background: var(--creme-fonce);
-    color: var(--encre);
-    font-size: 20px;
-    cursor: pointer;
-  }
+  .segment button.on { background: var(--sauge-fonce); border-color: var(--sauge-fonce); color: #fff; }
+  .check { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--encre); margin-top: 12px; }
+  .check input { width: 20px; height: 20px; accent-color: var(--sauge-fonce); }
+  details summary { cursor: pointer; font-size: 14px; color: var(--gris); }
+  details input { margin-top: 10px; }
+  .liste-drills { margin: 10px 0 0 18px; font-size: 15px; line-height: 1.5; }
+
+  /* Page partie */
+  .entete-trou { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .btn-nav { width: 46px; height: 46px; border-radius: 50%; border: none; background: var(--creme-fonce); color: var(--encre); font-size: 22px; cursor: pointer; }
   .btn-nav:disabled { opacity: 0.35; }
-  .numero-trou { text-align: center; }
-  .numero-trou .grand { font-family: Georgia, serif; font-size: 40px; line-height: 1; }
-  .numero-trou .petit { font-size: 12px; color: var(--gris); margin-top: 4px; }
-
-  .champs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 14px;
+  .num-trou { text-align: center; }
+  .num-trou .grand { font-family: Georgia, serif; font-size: 42px; line-height: 1; }
+  .num-trou .petit { font-size: 13px; color: var(--gris); margin-top: 4px; }
+  .pastilles { display: flex; gap: 6px; overflow-x: auto; padding: 2px 4px 12px; margin: 0 -4px; scrollbar-width: none; }
+  .pastilles::-webkit-scrollbar { display: none; }
+  .pastille {
+    flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid var(--creme-fonce); background: var(--blanc);
+    font: inherit; font-size: 13px; color: var(--gris); cursor: pointer;
   }
+  .pastille.joue { background: var(--creme-fonce); color: var(--encre); }
+  .pastille.actif { background: var(--sauge-fonce); border-color: var(--sauge-fonce); color: #fff; }
 
-  .compteur {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 14px;
-    gap: 10px;
+  .grille-clubs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .grille-clubs button {
+    padding: 16px 4px; border-radius: 12px; border: none; background: var(--sauge-fonce);
+    color: #fff; font: inherit; font-size: 16px; cursor: pointer;
   }
-  .compteur button {
-    width: 56px; height: 56px;
-    border-radius: 14px;
-    border: none;
-    background: var(--sauge);
-    color: #fff;
-    font-size: 26px;
-    cursor: pointer;
-  }
-  .compteur button.moins { background: var(--creme-fonce); color: var(--encre); }
-  .score-affiche { font-family: Georgia, serif; font-size: 48px; min-width: 80px; text-align: center; }
-  .diff { font-size: 13px; color: var(--gris); text-align: center; margin-top: 4px; }
+  .grille-clubs button.putter { background: var(--creme-fonce); color: var(--encre); }
+  .grille-clubs button.pen { background: transparent; color: var(--terracotta); border: 1px solid var(--terracotta); }
+  .grille-clubs button:active { transform: scale(0.97); }
 
+  .score-trou { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+  .score-trou .gros { font-family: Georgia, serif; font-size: 36px; line-height: 1; }
+  .coups { list-style: none; }
+  .coup { display: grid; grid-template-columns: 28px 1fr 36px; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--creme-fonce); }
+  .coup:last-child { border-bottom: none; }
+  .coup .n { color: var(--gris); font-size: 14px; text-align: center; }
+  .coup .l1 { display: flex; justify-content: space-between; gap: 8px; }
+  .coup .l1 b { font-weight: 600; }
+  .coup .gps { display: block; font-size: 12px; color: var(--gris); margin-top: 2px; }
+  .coup .x { width: 36px; height: 36px; border: none; background: transparent; color: var(--gris); font-size: 20px; cursor: pointer; }
+  .alerte { background: #F3E1D7; color: #7A3A22; border-radius: 10px; padding: 10px 12px; font-size: 13px; line-height: 1.4; margin-bottom: 14px; }
+
+  /* Synthèse */
+  .tuiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 10px; text-align: center; }
+  .tuile .val { font-family: Georgia, serif; font-size: 28px; line-height: 1.1; }
+  .tuile .lib { font-size: 12px; color: var(--gris); margin-top: 2px; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th, td { padding: 8px 4px; text-align: center; border-bottom: 1px solid var(--creme-fonce); }
   th { color: var(--gris); font-weight: 500; font-size: 12px; }
-  td.gauche, th.gauche { text-align: left; }
-  tr.actif { background: rgba(125,143,122,0.14); }
-  tr { cursor: pointer; }
+  td.g, th.g { text-align: left; }
+  tr.total td { font-weight: 600; border-bottom: none; }
+  .barres { display: flex; gap: 2px; height: 130px; position: relative; }
+  .barres::before { content: ""; position: absolute; left: 0; right: 0; top: 70px; height: 1px; background: var(--creme-fonce); }
+  .bcol { flex: 1; position: relative; height: 100%; }
+  .bcol span { position: absolute; bottom: 0; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--gris); }
+  .b { position: absolute; left: 12%; right: 12%; border-radius: 3px; }
+  .b.haut { bottom: 60px; background: var(--terracotta); }
+  .b.bas { top: 70px; background: var(--sauge); }
+  .b.zero { top: 69px; height: 3px; background: var(--gris); }
+  .recap { white-space: pre-wrap; font-family: ui-monospace, Menlo, monospace; font-size: 12px; background: var(--creme); border-radius: 10px; padding: 12px; margin-top: 12px; }
 
-  .totaux { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; }
-  .totaux .val { font-family: Georgia, serif; font-size: 26px; }
-  .totaux .lib { font-size: 12px; color: var(--gris); }
-
-  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 6px 0 24px; }
-  .actions button {
-    padding: 14px;
-    border-radius: 12px;
-    border: none;
-    font-size: 15px;
-    font-family: inherit;
-    cursor: pointer;
+  /* Barre d'onglets */
+  #tabs {
+    position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; gap: 6px;
+    background: var(--blanc); border-top: 1px solid var(--creme-fonce);
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
   }
-  .btn-principal { background: var(--sauge-fonce); color: #fff; }
-  .btn-secondaire { background: var(--creme-fonce); color: var(--encre); }
-  .btn-danger { background: transparent; color: var(--terracotta); border: 1px solid var(--terracotta) !important; }
-  .actions .plein { grid-column: 1 / -1; }
+  #tabs button { flex: 1; max-width: 180px; padding: 10px 4px; border: none; background: transparent; font: inherit; font-size: 14px; color: var(--gris); border-radius: 10px; cursor: pointer; }
+  #tabs button.actif { background: var(--creme-fonce); color: var(--encre); font-weight: 600; }
+  #tabs button:disabled { opacity: 0.4; }
 
-  .recap {
-    white-space: pre-wrap;
-    font-family: ui-monospace, Menlo, monospace;
-    font-size: 13px;
-    background: var(--creme);
-    border-radius: 10px;
-    padding: 12px;
-    margin-top: 10px;
-    display: none;
-  }
   .toast {
-    position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
-    background: var(--encre); color: var(--blanc);
-    padding: 10px 16px; border-radius: 20px; font-size: 14px;
-    opacity: 0; transition: opacity .25s; pointer-events: none;
+    position: fixed; left: 50%; bottom: calc(92px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+    background: var(--encre); color: var(--blanc); padding: 10px 16px; border-radius: 20px; font-size: 14px;
+    opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90%; text-align: center;
   }
   .toast.visible { opacity: 1; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Scorecard</h1>
-  <div class="sous-titre" id="date-affichee"></div>
-</header>
+<main id="app"></main>
 
-<section class="carte">
-  <label for="parcours">Parcours</label>
-  <input type="text" id="parcours" placeholder="Nom du parcours">
-  <div style="height:10px"></div>
-  <label for="type">Type de séance</label>
-  <input type="text" id="type" placeholder="Parcours, practice…">
-</section>
-
-<section class="carte">
-  <div class="trou-nav">
-    <button class="btn-nav" id="prec" aria-label="Trou précédent">‹</button>
-    <div class="numero-trou">
-      <div class="grand" id="num-trou">1</div>
-      <div class="petit">Trou</div>
-    </div>
-    <button class="btn-nav" id="suiv" aria-label="Trou suivant">›</button>
-  </div>
-
-  <div class="champs">
-    <div>
-      <label for="par">Par</label>
-      <input type="number" id="par" min="3" max="6" inputmode="numeric">
-    </div>
-    <div>
-      <label for="distance">Distance (m)</label>
-      <input type="number" id="distance" min="0" inputmode="numeric">
-    </div>
-  </div>
-
-  <div class="compteur">
-    <button class="moins" id="moins" aria-label="Retirer un coup">−</button>
-    <div>
-      <div class="score-affiche" id="score">–</div>
-      <div class="diff" id="diff"></div>
-    </div>
-    <button id="plus" aria-label="Ajouter un coup">+</button>
-  </div>
-</section>
-
-<section class="carte">
-  <div class="totaux">
-    <div><div class="val" id="total-score">0</div><div class="lib">Score</div></div>
-    <div><div class="val" id="total-par">0</div><div class="lib">Par</div></div>
-    <div><div class="val" id="total-diff">E</div><div class="lib">Vs par</div></div>
-  </div>
-</section>
-
-<section class="carte">
-  <table>
-    <thead>
-      <tr><th class="gauche">Trou</th><th>Par</th><th>Coups</th><th>+/−</th></tr>
-    </thead>
-    <tbody id="tableau"></tbody>
-  </table>
-</section>
-
-<div class="actions">
-  <button class="btn-principal plein" id="generer">Générer le récap</button>
-  <button class="btn-secondaire" id="copier">Copier</button>
-  <button class="btn-danger" id="effacer">Effacer</button>
-</div>
-
-<pre class="recap" id="recap"></pre>
+<nav id="tabs">
+  <button data-action="vue" data-v="accueil">Accueil</button>
+  <button data-action="vue" data-v="partie">Partie</button>
+  <button data-action="vue" data-v="synthese">Synthèse</button>
+</nav>
 
 <div class="toast" id="toast"></div>
 
 <script>
-  const NB_TROUS = 18;
-  const CLE = "golf-scorecard-v1";
-  let etat = charger();
-  let trouActif = 0;
+"use strict";
 
-  function nouvelEtat() {
-    return {
-      parcours: "",
-      type: "",
-      trous: Array.from({ length: NB_TROUS }, () => ({ par: 4, distance: "", coups: null }))
-    };
-  }
+const CLE = "golf-v2";
+const CLUBS_DEFAUT = ["Driver", "Hybride", "Fer 7", "Fer 9", "PW", "SW", "Putter"];
+const PENALITE = "Pénalité";
+const estPutt = c => /putter/i.test(c);
 
-  function charger() {
-    try {
-      const brut = localStorage.getItem(CLE);
-      if (brut) return JSON.parse(brut);
-    } catch (e) {}
-    return nouvelEtat();
-  }
-
-  function sauver() {
-    try { localStorage.setItem(CLE, JSON.stringify(etat)); } catch (e) {}
-  }
-
-  function toast(message) {
-    const t = document.getElementById("toast");
-    t.textContent = message;
-    t.classList.add("visible");
-    setTimeout(() => t.classList.remove("visible"), 1400);
-  }
-
-  function libelleDiff(d) {
-    if (d === 0) return "E";
-    return d > 0 ? "+" + d : String(d);
-  }
-
-  function rafraichir() {
-    const trou = etat.trous[trouActif];
-    document.getElementById("num-trou").textContent = trouActif + 1;
-    document.getElementById("prec").disabled = trouActif === 0;
-    document.getElementById("suiv").disabled = trouActif === NB_TROUS - 1;
-
-    document.getElementById("par").value = trou.par;
-    document.getElementById("distance").value = trou.distance;
-
-    const score = document.getElementById("score");
-    const diff = document.getElementById("diff");
-    if (trou.coups === null) {
-      score.textContent = "–";
-      diff.textContent = "";
-    } else {
-      score.textContent = trou.coups;
-      const d = trou.coups - trou.par;
-      diff.textContent = d === 0 ? "par" : (d < 0 ? "birdie ou mieux" : "+" + d + " par rapport au par");
+/* ---------- État ---------- */
+function etatInitial() {
+  return { golfs: [], golfId: null, clubs: [...CLUBS_DEFAUT], objectifScore: "", drills: "", partie: null, vue: "accueil" };
+}
+function charger() {
+  try {
+    const brut = localStorage.getItem(CLE);
+    if (brut) {
+      const e = Object.assign(etatInitial(), JSON.parse(brut));
+      if (e.partie) e.partie.trous.forEach(t => t.coups.forEach(c => { if (c.gps === "attente") c.gps = "echec"; }));
+      return e;
     }
+  } catch (err) {}
+  return etatInitial();
+}
+function sauver() { try { localStorage.setItem(CLE, JSON.stringify(S)); } catch (e) {} }
 
-    const tbody = document.getElementById("tableau");
-    tbody.innerHTML = "";
-    etat.trous.forEach((t, i) => {
-      const tr = document.createElement("tr");
-      if (i === trouActif) tr.classList.add("actif");
-      const d = t.coups === null ? "" : libelleDiff(t.coups - t.par);
-      tr.innerHTML =
-        `<td class="gauche">${i + 1}</td>` +
-        `<td>${t.par}</td>` +
-        `<td>${t.coups === null ? "–" : t.coups}</td>` +
-        `<td>${d}</td>`;
-      tr.addEventListener("click", () => { trouActif = i; rafraichir(); });
-      tbody.appendChild(tr);
+let S = charger();
+const ui = { ajout: false, form: { nom: "", nbTrous: 18, pos: false }, proche: "" };
+const app = document.getElementById("app");
+
+/* ---------- Utilitaires ---------- */
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmt = (n, d = 1) => Number(n).toLocaleString("fr-FR", { maximumFractionDigits: d });
+const signe = d => d === 0 ? "E" : d > 0 ? "+" + d : String(d);
+const dateLongue = d => d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+const pluriel = (n, mot) => n + " " + mot + (n > 1 ? "s" : "");
+
+function toast(m) {
+  const t = document.getElementById("toast");
+  t.textContent = m;
+  t.classList.add("visible");
+  clearTimeout(toast.h);
+  toast.h = setTimeout(() => t.classList.remove("visible"), 2000);
+}
+
+function distanceM(lat1, lng1, lat2, lng2) {
+  const R = 6371000, r = Math.PI / 180;
+  const dLat = (lat2 - lat1) * r, dLng = (lng2 - lng1) * r;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+
+function position() {
+  return new Promise((ok, ko) => {
+    if (!navigator.geolocation) return ko({ code: 0 });
+    navigator.geolocation.getCurrentPosition(ok, ko, { enableHighAccuracy: true, timeout: 12000, maximumAge: 3000 });
+  });
+}
+
+function golfCourant() { return S.golfs.find(g => g.id === S.golfId) || null; }
+
+function parseClubs(txt) {
+  const l = txt.split(/[,;\n]/).map(s => s.trim()).filter(s => s && s !== PENALITE);
+  const uniq = [...new Set(l)];
+  if (!uniq.length) return [...CLUBS_DEFAUT];
+  if (!uniq.some(estPutt)) uniq.push("Putter");
+  return uniq;
+}
+
+/* ---------- Calculs ---------- */
+function statsTrou(t) {
+  const n = t.coups.length;
+  const putts = t.coups.filter(c => estPutt(c.club)).length;
+  const pen = t.coups.filter(c => c.club === PENALITE).length;
+  const idxPutt = t.coups.findIndex(c => estPutt(c.club));
+  const gir = idxPutt === -1 ? null : idxPutt <= t.par - 2;
+  return { n, putts, pen, gir, diff: n - t.par, joue: n > 0 };
+}
+
+// Distance de chaque coup = écart entre sa position et celle du coup suivant (mesure GPS, indicative)
+function distancesTrou(t) {
+  return t.coups.map((c, k) => {
+    const s = t.coups[k + 1];
+    if (!s || c.club === PENALITE || s.club === PENALITE || c.lat == null || s.lat == null) return null;
+    return distanceM(c.lat, c.lng, s.lat, s.lng);
+  });
+}
+
+function calculs(p) {
+  const lignes = p.trous.map(t => Object.assign({ t }, statsTrou(t)));
+  const jouees = lignes.filter(l => l.joue);
+  const somme = (a, f) => a.reduce((s, x) => s + f(x), 0);
+  const avecGir = jouees.filter(l => l.gir !== null);
+  return {
+    lignes,
+    nbJouees: jouees.length,
+    score: somme(jouees, l => l.n),
+    par: somme(jouees, l => l.t.par),
+    putts: somme(jouees, l => l.putts),
+    pen: somme(jouees, l => l.pen),
+    girOk: avecGir.filter(l => l.gir).length,
+    girTotal: avecGir.length,
+    birdies: jouees.filter(l => l.diff <= -1).length,
+    pars: jouees.filter(l => l.diff === 0).length,
+    bogeys: jouees.filter(l => l.diff === 1).length,
+    doubles: jouees.filter(l => l.diff >= 2).length
+  };
+}
+
+function statsClubs(p) {
+  const m = new Map();
+  p.trous.forEach(t => {
+    const d = distancesTrou(t);
+    t.coups.forEach((c, k) => {
+      if (c.club === PENALITE) return;
+      if (!m.has(c.club)) m.set(c.club, { n: 0, d: [] });
+      const e = m.get(c.club);
+      e.n++;
+      if (!estPutt(c.club) && d[k] != null && d[k] >= 5 && d[k] <= 400) e.d.push(d[k]);
     });
+  });
+  const ordre = S.clubs;
+  return [...m.entries()]
+    .sort((a, b) => { const ia = ordre.indexOf(a[0]), ib = ordre.indexOf(b[0]); return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib); })
+    .map(([club, e]) => ({ club, n: e.n, mesures: e.d.length, moy: e.d.length ? e.d.reduce((s, x) => s + x, 0) / e.d.length : null }));
+}
 
-    const joues = etat.trous.filter(t => t.coups !== null);
-    const totalScore = joues.reduce((s, t) => s + t.coups, 0);
-    const totalPar = joues.reduce((s, t) => s + t.par, 0);
-    document.getElementById("total-score").textContent = totalScore;
-    document.getElementById("total-par").textContent = totalPar;
-    document.getElementById("total-diff").textContent = libelleDiff(totalScore - totalPar);
+function objectifTexte(p, c) {
+  const o = parseInt(p.objectifScore, 10);
+  if (isNaN(o)) return "";
+  if (c.nbJouees < p.trous.length) return `Objectif : ${o} (comparaison possible quand les ${p.trous.length} trous sont saisis)`;
+  const d = c.score - o;
+  if (d === 0) return `Objectif de ${o} atteint pile`;
+  if (d < 0) return `Objectif de ${o} atteint (${pluriel(-d, "coup")} d'avance)`;
+  return `Objectif de ${o} manqué de ${pluriel(d, "coup")}`;
+}
 
-    sauver();
+/* ---------- Géolocalisation d'un coup ---------- */
+function localiser(coup) {
+  if (!navigator.geolocation) { coup.gps = "indispo"; sauver(); render(); return; }
+  navigator.geolocation.getCurrentPosition(
+    p => { coup.lat = p.coords.latitude; coup.lng = p.coords.longitude; coup.acc = p.coords.accuracy; coup.gps = "ok"; sauver(); render(); },
+    err => { coup.gps = err && err.code === 1 ? "refuse" : "echec"; sauver(); render(); },
+    { enableHighAccuracy: true, timeout: 12000, maximumAge: 3000 }
+  );
+}
+function libGps(c) {
+  if (c.club === PENALITE) return "";
+  if (c.gps === "ok") return `GPS ±${Math.round(c.acc)} m`;
+  if (c.gps === "attente") return "GPS en cours…";
+  if (c.gps === "refuse") return "GPS refusé";
+  return "GPS indisponible";
+}
+
+/* ---------- Vues ---------- */
+function vueAccueil() {
+  const g = golfCourant();
+  const formVisible = ui.ajout || S.golfs.length === 0;
+  let h = `<header class="page"><h1>Golf</h1><div class="sous">${esc(dateLongue(new Date()))}</div></header>`;
+
+  if (S.partie) {
+    const p = S.partie;
+    const saisis = p.trous.filter(t => t.coups.length > 0).length;
+    h += `<section class="carte reprise"><h2>Partie en cours</h2>
+      <div>${esc(p.golfNom)} · ${saisis}/${p.trous.length} trous saisis</div>
+      <div class="rangee">
+        <button class="btn principal" data-action="reprendre">Reprendre la saisie</button>
+        <button class="btn secondaire" data-action="vue" data-v="synthese">Voir la synthèse</button>
+      </div></section>`;
   }
 
-  document.getElementById("date-affichee").textContent =
-    new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-
-  document.getElementById("parcours").value = etat.parcours || "";
-  document.getElementById("type").value = etat.type || "";
-  document.getElementById("parcours").addEventListener("input", e => { etat.parcours = e.target.value; sauver(); });
-  document.getElementById("type").addEventListener("input", e => { etat.type = e.target.value; sauver(); });
-
-  document.getElementById("par").addEventListener("change", e => {
-    etat.trous[trouActif].par = parseInt(e.target.value, 10) || 4;
-    rafraichir();
-  });
-  document.getElementById("distance").addEventListener("change", e => {
-    etat.trous[trouActif].distance = e.target.value;
-    sauver();
-  });
-
-  document.getElementById("plus").addEventListener("click", () => {
-    const t = etat.trous[trouActif];
-    t.coups = (t.coups === null ? t.par : t.coups + 1);
-    rafraichir();
-  });
-  document.getElementById("moins").addEventListener("click", () => {
-    const t = etat.trous[trouActif];
-    if (t.coups === null) return;
-    t.coups = t.coups > 1 ? t.coups - 1 : null;
-    rafraichir();
-  });
-
-  document.getElementById("prec").addEventListener("click", () => { if (trouActif > 0) { trouActif--; rafraichir(); } });
-  document.getElementById("suiv").addEventListener("click", () => { if (trouActif < NB_TROUS - 1) { trouActif++; rafraichir(); } });
-
-  function genererRecap() {
-    const date = new Date().toLocaleDateString("fr-FR");
-    const joues = etat.trous.filter(t => t.coups !== null);
-    const totalScore = joues.reduce((s, t) => s + t.coups, 0);
-    const totalPar = joues.reduce((s, t) => s + t.par, 0);
-    const lignes = etat.trous.map((t, i) =>
-      `T${i + 1} : par ${t.par}, ${t.coups === null ? "non joué" : t.coups + " coups (" + libelleDiff(t.coups - t.par) + ")"}`
-    );
-    return [
-      `Séance Golf · ${date}`,
-      etat.parcours ? `Parcours : ${etat.parcours}` : null,
-      etat.type ? `Type : ${etat.type}` : null,
-      "",
-      ...lignes,
-      "",
-      `Total : ${totalScore} coups pour un par de ${totalPar} (${libelleDiff(totalScore - totalPar)})`
-    ].filter(l => l !== null).join("\n");
+  h += `<section class="carte"><h2>Parcours</h2>`;
+  if (formVisible) {
+    h += `<div class="champ"><label for="f-nom">Nom du golf</label>
+        <input type="text" id="f-nom" data-f="formNom" value="${esc(ui.form.nom)}" placeholder="Nom du golf"></div>
+      <div class="champ"><label>Nombre de trous</label><div class="segment">
+        <button data-action="formTrous" data-v="9" class="${ui.form.nbTrous === 9 ? "on" : ""}">9</button>
+        <button data-action="formTrous" data-v="18" class="${ui.form.nbTrous === 18 ? "on" : ""}">18</button>
+      </div></div>
+      <label class="check"><input type="checkbox" data-f="formPos" ${ui.form.pos ? "checked" : ""}> Enregistrer ma position (je suis sur place)</label>
+      <div class="rangee">
+        <button class="btn principal" data-action="enregistrerGolf">Ajouter ce golf</button>
+        ${S.golfs.length ? `<button class="btn secondaire" data-action="annulerGolf">Annuler</button>` : ""}
+      </div>
+      <p class="note">La position sert uniquement à te proposer le golf le plus proche. Elle reste sur ton appareil.</p>`;
+  } else {
+    const options = S.golfs.map(x => `<option value="${esc(x.id)}" ${x.id === S.golfId ? "selected" : ""}>${esc(x.nom)}</option>`).join("");
+    h += `<div class="champ"><label for="sel-golf">Golf</label><select id="sel-golf" data-f="golfId">${options}</select></div>
+      <p class="note">${g.nbTrous} trous · ${g.lat != null ? "position enregistrée" : "position non enregistrée"}</p>
+      ${ui.proche ? `<p class="note">${esc(ui.proche)}</p>` : ""}
+      <div class="rangee">
+        <button class="btn secondaire" data-action="proche">Le plus proche de moi</button>
+        <button class="btn secondaire" data-action="ajouterGolf">Ajouter un golf</button>
+      </div>
+      <div class="rangee">
+        <button class="lien" data-action="positionGolf">Enregistrer ma position pour ce golf</button>
+        <button class="lien danger" data-action="supprimerGolf">Supprimer ce golf</button>
+      </div>`;
   }
+  h += `</section>`;
 
-  document.getElementById("generer").addEventListener("click", () => {
-    const r = document.getElementById("recap");
-    r.textContent = genererRecap();
-    r.style.display = "block";
+  h += `<section class="carte"><h2>Objectifs du jour</h2>
+    <div class="champ"><label for="obj">Score visé</label>
+      <input type="number" id="obj" inputmode="numeric" data-f="objectifScore" value="${esc(S.objectifScore)}" placeholder="Score visé"></div>
+    <div class="champ"><label for="drills">Drills à travailler</label>
+      <textarea id="drills" data-f="drills" placeholder="Un drill par ligne">${esc(S.drills)}</textarea></div>
+    <div class="champ"><details><summary>Mes clubs</summary>
+      <input type="text" data-f="clubs" value="${esc(S.clubs.join(", "))}" aria-label="Liste des clubs séparés par des virgules">
+      <p class="note">Sépare les clubs par des virgules. Le putter est toujours conservé.</p></details></div>
+  </section>`;
+
+  h += `<button class="btn principal plein" data-action="demarrer">${S.partie ? "Nouvelle partie" : "Commencer la partie"}</button>`;
+  return h;
+}
+
+function vuePartie() {
+  const p = S.partie, i = p.trouActif, t = p.trous[i];
+  const st = statsTrou(t), dist = distancesTrou(t);
+  const pastilles = p.trous.map((x, k) =>
+    `<button class="pastille${k === i ? " actif" : ""}${x.coups.length ? " joue" : ""}" data-action="allerTrou" data-v="${k}" aria-label="Trou ${k + 1}">${k + 1}</button>`).join("");
+  const boutons = S.clubs.map(c => `<button class="${estPutt(c) ? "putter" : ""}" data-action="coup" data-club="${esc(c)}">${esc(c)}</button>`).join("")
+    + `<button class="pen" data-action="coup" data-club="${PENALITE}">Pénalité +1</button>`;
+  const liste = t.coups.length
+    ? `<ul class="coups">${t.coups.map((c, k) => {
+        const d = dist[k];
+        return `<li class="coup"><span class="n">${k + 1}</span>
+          <div><div class="l1"><b>${esc(c.club)}</b><span>${d != null && d >= 1 ? "≈ " + Math.round(d) + " m" : ""}</span></div>
+          <span class="gps">${libGps(c)}</span></div>
+          <button class="x" data-action="supprimerCoup" data-v="${k}" aria-label="Supprimer le coup ${k + 1}">×</button></li>`;
+      }).join("")}</ul>`
+    : `<p class="note">Aucun coup saisi sur ce trou.</p>`;
+  const refus = t.coups.some(c => c.gps === "refuse")
+    ? `<div class="alerte">Localisation refusée. Autorise-la dans Réglages > Confidentialité et sécurité > Service de localisation, puis rouvre la page.</div>` : "";
+  const drills = p.drills.trim()
+    ? `<details class="carte"><summary>Drills du jour</summary><ul class="liste-drills">${p.drills.trim().split(/\n+/).map(x => `<li>${esc(x)}</li>`).join("")}</ul></details>` : "";
+
+  return `<header class="page"><h1>${esc(p.golfNom)}</h1>
+      <div class="sous">${esc(dateLongue(new Date(p.date)))}${p.objectifScore ? " · objectif " + esc(p.objectifScore) : ""}</div></header>
+    ${drills}
+    <section class="carte"><div class="entete-trou">
+      <button class="btn-nav" data-action="trouPrec" ${i === 0 ? "disabled" : ""} aria-label="Trou précédent">‹</button>
+      <div class="num-trou"><div class="grand">${i + 1}</div><div class="petit">Trou · par ${t.par}${t.distance ? " · " + esc(t.distance) + " m" : ""}</div></div>
+      <button class="btn-nav" data-action="trouSuiv" ${i === p.trous.length - 1 ? "disabled" : ""} aria-label="Trou suivant">›</button>
+    </div></section>
+    <div class="pastilles">${pastilles}</div>
+    ${refus}
+    <section class="carte"><h2>Quel club ?</h2><div class="grille-clubs">${boutons}</div>
+      <p class="note">Chaque appui enregistre le coup et ta position GPS à cet instant.</p></section>
+    <section class="carte">
+      <div class="score-trou">
+        <div><div class="gros">${st.n}</div><div class="sous">${pluriel(st.n, "coup")} · ${pluriel(st.putts, "putt")}</div></div>
+        <div class="sous">${st.n ? (st.diff === 0 ? "Au par" : signe(st.diff) + " par rapport au par") : ""}</div>
+      </div>${liste}</section>
+    <section class="carte"><h2>Ce trou</h2>
+      <div class="champ"><label>Par</label><div class="segment">
+        ${[3, 4, 5, 6].map(v => `<button data-action="par" data-v="${v}" class="${t.par === v ? "on" : ""}">${v}</button>`).join("")}
+      </div></div>
+      <div class="champ"><label for="dist">Distance (m)</label>
+        <input type="number" id="dist" inputmode="numeric" data-f="distance" value="${esc(t.distance)}" placeholder="Distance"></div>
+      <p class="note">Par et distance sont mémorisés pour ce golf.</p></section>`;
+}
+
+function barres(lignes) {
+  const cols = lignes.map((l, k) => {
+    let b = "";
+    if (l.joue) {
+      const d = Math.max(-2, Math.min(3, l.diff));
+      b = d > 0 ? `<i class="b haut" style="height:${d * 20}px"></i>`
+        : d < 0 ? `<i class="b bas" style="height:${-d * 20}px"></i>`
+        : `<i class="b zero"></i>`;
+    }
+    return `<div class="bcol">${b}<span>${k + 1}</span></div>`;
+  }).join("");
+  return `<div class="barres">${cols}</div>`;
+}
+
+function vueSynthese() {
+  const p = S.partie, c = calculs(p);
+  const ecart = c.score - c.par;
+  const obj = objectifTexte(p, c);
+  const clubs = statsClubs(p);
+
+  const lignes = c.lignes.map((l, k) =>
+    `<tr><td class="g">${k + 1}</td><td>${l.t.par}</td><td>${l.joue ? l.n : "–"}</td><td>${l.joue ? l.putts : "–"}</td><td>${l.joue ? signe(l.diff) : ""}</td></tr>`).join("");
+
+  const tabClubs = clubs.length
+    ? `<table><thead><tr><th class="g">Club</th><th>Coups</th><th>Dist. moy. ≈</th></tr></thead><tbody>${clubs.map(x =>
+        `<tr><td class="g">${esc(x.club)}</td><td>${x.n}</td><td>${x.moy != null ? Math.round(x.moy) + " m" : "–"}</td></tr>`).join("")}</tbody></table>
+       <p class="note">Distances mesurées par GPS entre deux coups consécutifs : indicatives (précision d'environ 5 à 20 m). Putts exclus.</p>`
+    : `<p class="note">Aucun coup saisi.</p>`;
+
+  const drills = p.drills.trim()
+    ? `<section class="carte"><h2>Drills du jour</h2><ul class="liste-drills">${p.drills.trim().split(/\n+/).map(x => `<li>${esc(x)}</li>`).join("")}</ul></section>` : "";
+
+  return `<header class="page"><h1>Synthèse</h1><div class="sous">${esc(p.golfNom)} · ${esc(dateLongue(new Date(p.date)))}</div></header>
+    <section class="carte">
+      <div class="tuiles">
+        <div class="tuile"><div class="val">${c.score}</div><div class="lib">Score (${c.nbJouees}/${p.trous.length} trous)</div></div>
+        <div class="tuile"><div class="val">${c.nbJouees ? signe(ecart) : "–"}</div><div class="lib">Écart au par</div></div>
+        <div class="tuile"><div class="val">${c.putts}</div><div class="lib">Putts${c.nbJouees ? " · " + fmt(c.putts / c.nbJouees) + "/trou" : ""}</div></div>
+        <div class="tuile"><div class="val">${c.girTotal ? c.girOk + "/" + c.girTotal : "–"}</div><div class="lib">Greens en rég. (estimé)</div></div>
+        <div class="tuile"><div class="val">${c.pen}</div><div class="lib">Pénalités</div></div>
+        <div class="tuile"><div class="val">${c.pars + c.birdies}</div><div class="lib">Pars ou mieux</div></div>
+      </div>
+      ${obj ? `<p class="note">${esc(obj)}</p>` : ""}
+      <p class="note">L'écart au par est un calcul simplifié, ce n'est pas un index officiel.</p>
+    </section>
+    <section class="carte"><h2>Écart au par par trou</h2>${barres(c.lignes)}
+      <p class="note">Au-dessus de la ligne : plus de coups que le par. En dessous : mieux que le par.</p></section>
+    <section class="carte"><h2>Répartition</h2>
+      <div class="tuiles" style="grid-template-columns:repeat(4,1fr)">
+        <div class="tuile"><div class="val">${c.birdies}</div><div class="lib">Birdie ou mieux</div></div>
+        <div class="tuile"><div class="val">${c.pars}</div><div class="lib">Pars</div></div>
+        <div class="tuile"><div class="val">${c.bogeys}</div><div class="lib">Bogeys</div></div>
+        <div class="tuile"><div class="val">${c.doubles}</div><div class="lib">Double ou +</div></div>
+      </div></section>
+    <section class="carte"><h2>Trou par trou</h2>
+      <table><thead><tr><th class="g">Trou</th><th>Par</th><th>Coups</th><th>Putts</th><th>+/−</th></tr></thead>
+      <tbody>${lignes}<tr class="total"><td class="g">Total</td><td>${c.par}</td><td>${c.score}</td><td>${c.putts}</td><td>${c.nbJouees ? signe(ecart) : ""}</td></tr></tbody></table></section>
+    <section class="carte"><h2>Clubs</h2>${tabClubs}</section>
+    ${drills}
+    <section class="carte"><h2>Bilan</h2>
+      <div class="champ"><label for="ressenti">Ressenti swing</label><input type="text" id="ressenti" data-f="ressenti" value="${esc(p.ressenti)}"></div>
+      <div class="champ"><label for="priorite">Priorité prochaine séance</label><input type="text" id="priorite" data-f="priorite" value="${esc(p.priorite)}"></div>
+      <div class="champ"><label for="notes">Notes</label><textarea id="notes" data-f="notes">${esc(p.notes)}</textarea></div>
+    </section>
+    <div class="rangee">
+      <button class="btn principal" data-action="copier">Copier le récap</button>
+      <button class="btn secondaire" data-action="copierJson">Copier les données brutes</button>
+    </div>
+    <pre class="recap" id="recap" style="display:none"></pre>
+    <div class="rangee"><button class="btn danger" data-action="effacerPartie">Effacer cette partie</button></div>
+    <p class="note">Les données restent sur cet appareil : pense à copier le récap vers ta base Notion en fin de partie.</p>`;
+}
+
+function recapTexte() {
+  const p = S.partie, c = calculs(p);
+  const L = [];
+  L.push(`Séance Golf · ${new Date(p.date).toLocaleDateString("fr-FR")}`);
+  L.push(`Parcours : ${p.golfNom}`);
+  L.push(`Type : Parcours`);
+  L.push("");
+  L.push(`Score : ${c.score} pour un par de ${c.par} (${c.nbJouees ? signe(c.score - c.par) : "–"}) sur ${pluriel(c.nbJouees, "trou")} joué${c.nbJouees > 1 ? "s" : ""}`);
+  const obj = objectifTexte(p, c);
+  if (obj) L.push(obj);
+  L.push(`Putts : ${c.putts}${c.nbJouees ? " (" + fmt(c.putts / c.nbJouees) + " par trou)" : ""} · Pénalités : ${c.pen} · Greens en régulation (estimé) : ${c.girTotal ? c.girOk + "/" + c.girTotal : "–"}`);
+  L.push(`Répartition : ${c.birdies} birdie ou mieux, ${c.pars} par, ${c.bogeys} bogey, ${c.doubles} double ou plus`);
+  if (p.drills.trim()) L.push(`Drills à travailler : ${p.drills.trim().split(/\n+/).join(" ; ")}`);
+  if (p.ressenti.trim()) L.push(`Ressenti swing : ${p.ressenti.trim()}`);
+  if (p.priorite.trim()) L.push(`Priorité prochaine séance : ${p.priorite.trim()}`);
+  if (p.notes.trim()) L.push(`Notes : ${p.notes.trim()}`);
+  L.push("");
+  L.push("Trou par trou");
+  c.lignes.forEach((l, k) => {
+    if (!l.joue) return;
+    L.push(`T${k + 1} : par ${l.t.par} — ${pluriel(l.n, "coup")} (${signe(l.diff)}), ${pluriel(l.putts, "putt")} · ${l.t.coups.map(x => x.club).join(", ")}`);
   });
+  const clubs = statsClubs(p);
+  if (clubs.length) {
+    L.push("");
+    L.push("Clubs : " + clubs.map(x => `${x.club} ×${x.n}${x.moy != null ? " (≈ " + Math.round(x.moy) + " m)" : ""}`).join(" · "));
+  }
+  return L.join("\n");
+}
 
-  document.getElementById("copier").addEventListener("click", async () => {
-    const texte = genererRecap();
+/* ---------- Rendu ---------- */
+function render(haut) {
+  const y = window.scrollY;
+  if (!golfCourant() && S.golfs.length) S.golfId = S.golfs[0].id;
+  const v = S.partie && (S.vue === "partie" || S.vue === "synthese") ? S.vue : "accueil";
+  app.innerHTML = v === "partie" ? vuePartie() : v === "synthese" ? vueSynthese() : vueAccueil();
+  document.querySelectorAll("#tabs button").forEach(b => {
+    b.classList.toggle("actif", b.dataset.v === v);
+    b.disabled = b.dataset.v !== "accueil" && !S.partie;
+  });
+  window.scrollTo(0, haut ? 0 : y);
+  if (v === "partie") {
+    const a = document.querySelector(".pastille.actif");
+    if (a && a.scrollIntoView) a.scrollIntoView({ block: "nearest", inline: "center" });
+  }
+}
+
+/* ---------- Actions ---------- */
+function majGolfTrou() {
+  const p = S.partie, t = p.trous[p.trouActif];
+  const g = S.golfs.find(x => x.id === p.golfId);
+  if (g && g.holes[p.trouActif]) { g.holes[p.trouActif].par = t.par; g.holes[p.trouActif].distance = t.distance; }
+}
+
+const ACTIONS = {
+  vue(b) { S.vue = b.dataset.v; sauver(); render(true); },
+  ajouterGolf() { ui.ajout = true; ui.form = { nom: "", nbTrous: 18, pos: false }; render(); },
+  annulerGolf() { ui.ajout = false; render(); },
+  formTrous(b) { ui.form.nbTrous = Number(b.dataset.v); render(); },
+
+  async enregistrerGolf() {
+    const champ = document.querySelector('[data-f="formNom"]');
+    const nom = (champ ? champ.value : ui.form.nom).trim();
+    if (!nom) { toast("Donne un nom au golf"); return; }
+    const n = ui.form.nbTrous;
+    const g = { id: Date.now().toString(36), nom, nbTrous: n, holes: Array.from({ length: n }, () => ({ par: 4, distance: "" })), lat: null, lng: null };
+    if (ui.form.pos) {
+      try { const p = await position(); g.lat = p.coords.latitude; g.lng = p.coords.longitude; }
+      catch (e) { toast("Position non enregistrée"); }
+    }
+    S.golfs.push(g); S.golfId = g.id; ui.ajout = false; ui.proche = "";
+    sauver(); render();
+  },
+
+  async positionGolf() {
+    const g = golfCourant(); if (!g) return;
     try {
-      await navigator.clipboard.writeText(texte);
-      toast("Récap copié");
+      const p = await position();
+      g.lat = p.coords.latitude; g.lng = p.coords.longitude;
+      sauver(); toast("Position enregistrée pour " + g.nom); render();
+    } catch (e) { toast("Position indisponible"); }
+  },
+
+  supprimerGolf() {
+    const g = golfCourant(); if (!g) return;
+    if (!confirm(`Supprimer « ${g.nom} » de ta liste ?`)) return;
+    S.golfs = S.golfs.filter(x => x.id !== g.id);
+    S.golfId = S.golfs.length ? S.golfs[0].id : null;
+    ui.proche = ""; sauver(); render();
+  },
+
+  async proche() {
+    const avec = S.golfs.filter(g => g.lat != null);
+    if (!avec.length) {
+      ui.proche = "Aucun golf n'a de position enregistrée. Utilise « Enregistrer ma position pour ce golf » une fois sur place.";
+      render(); return;
+    }
+    try {
+      const p = await position();
+      const l = avec.map(g => ({ g, d: distanceM(p.coords.latitude, p.coords.longitude, g.lat, g.lng) })).sort((a, b) => a.d - b.d)[0];
+      const km = l.d / 1000;
+      if (km <= 30) { S.golfId = l.g.id; sauver(); ui.proche = `Le plus proche : ${l.g.nom} (${fmt(km)} km). Tu peux en choisir un autre.`; }
+      else ui.proche = `Aucun golf enregistré à moins de 30 km (le plus proche : ${l.g.nom}, ${fmt(km, 0)} km).`;
     } catch (e) {
+      ui.proche = e && e.code === 1 ? "Localisation refusée : choisis ton golf à la main." : "Position indisponible : choisis ton golf à la main.";
+    }
+    render();
+  },
+
+  demarrer() {
+    const g = golfCourant();
+    if (!g) { toast("Choisis ou ajoute un golf"); return; }
+    if (S.partie && !confirm("Une partie est déjà en cours. La remplacer par une nouvelle ?")) return;
+    S.partie = {
+      golfId: g.id, golfNom: g.nom, date: new Date().toISOString(),
+      objectifScore: S.objectifScore, drills: S.drills,
+      trous: g.holes.map(h => ({ par: h.par, distance: h.distance, coups: [] })),
+      trouActif: 0, ressenti: "", priorite: "", notes: ""
+    };
+    S.vue = "partie"; sauver(); render(true);
+  },
+  reprendre() { S.vue = "partie"; sauver(); render(true); },
+
+  coup(b) {
+    const t = S.partie.trous[S.partie.trouActif];
+    const coup = { club: b.dataset.club, t: Date.now(), lat: null, lng: null, acc: null, gps: b.dataset.club === PENALITE ? "aucun" : "attente" };
+    t.coups.push(coup);
+    sauver(); render();
+    if (coup.gps === "attente") localiser(coup);
+  },
+  supprimerCoup(b) { S.partie.trous[S.partie.trouActif].coups.splice(Number(b.dataset.v), 1); sauver(); render(); },
+  par(b) { S.partie.trous[S.partie.trouActif].par = Number(b.dataset.v); majGolfTrou(); sauver(); render(); },
+  trouPrec() { if (S.partie.trouActif > 0) { S.partie.trouActif--; sauver(); render(true); } },
+  trouSuiv() { if (S.partie.trouActif < S.partie.trous.length - 1) { S.partie.trouActif++; sauver(); render(true); } },
+  allerTrou(b) { S.partie.trouActif = Number(b.dataset.v); sauver(); render(true); },
+
+  async copier() {
+    const texte = recapTexte();
+    try { await navigator.clipboard.writeText(texte); toast("Récap copié"); }
+    catch (e) {
       const r = document.getElementById("recap");
-      r.textContent = texte;
-      r.style.display = "block";
+      r.textContent = texte; r.style.display = "block";
       toast("Copie impossible : sélectionne le texte");
     }
-  });
+  },
+  async copierJson() {
+    const texte = JSON.stringify(S.partie, null, 2);
+    try { await navigator.clipboard.writeText(texte); toast("Données copiées"); }
+    catch (e) {
+      const r = document.getElementById("recap");
+      r.textContent = texte; r.style.display = "block";
+      toast("Copie impossible : sélectionne le texte");
+    }
+  },
+  effacerPartie() {
+    if (!confirm("Effacer cette partie ? Cette action est définitive.")) return;
+    S.partie = null; S.vue = "accueil"; sauver(); render(true);
+  }
+};
 
-  document.getElementById("effacer").addEventListener("click", () => {
-    if (!confirm("Effacer toute la séance en cours ?")) return;
-    etat = nouvelEtat();
-    trouActif = 0;
-    document.getElementById("parcours").value = "";
-    document.getElementById("type").value = "";
-    document.getElementById("recap").style.display = "none";
-    rafraichir();
-    toast("Séance effacée");
-  });
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-action]");
+  if (!b) return;
+  const f = ACTIONS[b.dataset.action];
+  if (f) f(b);
+});
 
-  rafraichir();
+document.addEventListener("input", e => {
+  const f = e.target.dataset && e.target.dataset.f;
+  if (!f || e.target.type === "checkbox") return;
+  const v = e.target.value;
+  switch (f) {
+    case "formNom": ui.form.nom = v; return;
+    case "objectifScore": S.objectifScore = v; break;
+    case "drills": S.drills = v; break;
+    case "ressenti": S.partie.ressenti = v; break;
+    case "priorite": S.partie.priorite = v; break;
+    case "notes": S.partie.notes = v; break;
+    case "distance": S.partie.trous[S.partie.trouActif].distance = v; majGolfTrou(); break;
+    default: return;
+  }
+  sauver();
+});
+
+document.addEventListener("change", e => {
+  const f = e.target.dataset && e.target.dataset.f;
+  if (!f) return;
+  if (f === "formPos") { ui.form.pos = e.target.checked; return; }
+  if (f === "golfId") { S.golfId = e.target.value; ui.proche = ""; sauver(); render(); return; }
+  if (f === "clubs") { S.clubs = parseClubs(e.target.value); e.target.value = S.clubs.join(", "); sauver(); toast("Clubs mis à jour"); }
+});
+
+render();
 </script>
 </body>
 </html>
