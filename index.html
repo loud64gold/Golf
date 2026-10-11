@@ -60,12 +60,14 @@
   .champ + .champ { margin-top: 12px; }
   .rangee { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
   .rangee > * { flex: 1; }
+  .rangee.trois .btn { font-size: 13px; padding: 10px 6px; }
 
   .btn { padding: 13px 14px; border-radius: 12px; border: none; font: inherit; font-size: 15px; cursor: pointer; }
   .btn.principal { background: var(--sauge-fonce); color: #fff; }
   .btn.secondaire { background: var(--creme-fonce); color: var(--encre); }
   .btn.danger { background: transparent; color: var(--terracotta); border: 1px solid var(--terracotta); }
   .btn.plein { width: 100%; }
+  .btn:disabled { opacity: 0.4; cursor: default; }
   .lien { background: none; border: none; font: inherit; font-size: 13px; color: var(--sauge-fonce); text-decoration: underline; padding: 6px 2px; cursor: pointer; }
   .lien.danger { color: var(--terracotta); }
   .note { font-size: 13px; color: var(--gris); margin-top: 8px; line-height: 1.4; }
@@ -76,14 +78,18 @@
     border-radius: 10px; font: inherit; font-size: 16px; color: var(--encre); cursor: pointer;
   }
   .segment button.on { background: var(--sauge-fonce); border-color: var(--sauge-fonce); color: #fff; }
-  .check { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--encre); margin-top: 12px; }
-  .check input { width: 20px; height: 20px; accent-color: var(--sauge-fonce); }
   details summary { cursor: pointer; font-size: 14px; color: var(--gris); }
-  details input { margin-top: 10px; }
   .liste-drills { margin: 10px 0 0 18px; font-size: 15px; line-height: 1.5; }
 
   .segment.wrap { flex-wrap: wrap; }
   .segment.wrap button { flex: 1 0 28%; }
+
+  /* Mes clubs (accueil) */
+  .groupe-clubs + .groupe-clubs { margin-top: 14px; }
+  .lib-groupe { font-size: 12px; color: var(--gris); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+  .puces { display: flex; flex-wrap: wrap; gap: 8px; }
+  .puce { padding: 9px 14px; border-radius: 999px; border: 1px solid var(--creme-fonce); background: var(--creme); color: var(--encre); font: inherit; font-size: 15px; cursor: pointer; }
+  .puce.on { background: var(--sauge-fonce); border-color: var(--sauge-fonce); color: #fff; }
 
   /* Page partie */
   .entete-trou { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
@@ -109,6 +115,9 @@
   }
   .grille-clubs button.putter { background: var(--creme-fonce); color: var(--encre); }
   .grille-clubs button.pen { background: transparent; color: var(--terracotta); border: 1px solid var(--terracotta); }
+  .grille-clubs button.sel { background: var(--terracotta); color: #fff; box-shadow: 0 0 0 3px rgba(176,89,58,0.28); }
+  .prec { background: var(--creme); border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-bottom: 12px; }
+  .prec b { font-weight: 600; }
   .grille-clubs button:active { transform: scale(0.97); }
 
   .score-trou { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
@@ -121,6 +130,24 @@
   .coup .l1 b { font-weight: 600; }
   .coup .gps { display: block; font-size: 12px; color: var(--gris); margin-top: 2px; }
   .coup .x { width: 36px; height: 36px; border: none; background: transparent; color: var(--gris); font-size: 20px; cursor: pointer; }
+  /* Plan du trou */
+  svg.plan { display: block; width: 100%; height: auto; border-radius: 10px; }
+  .plan .fond { fill: #E5EADD; }
+  .plan .axe { stroke: var(--sauge-fonce); stroke-width: 1.5; stroke-dasharray: 5 4; opacity: 0.7; }
+  .plan .trace { fill: none; stroke: var(--terracotta); stroke-width: 2; stroke-linejoin: round; opacity: 0.75; }
+  .plan .tee { fill: var(--encre); }
+  .plan .green { fill: var(--sauge-fonce); stroke: #fff; stroke-width: 2; }
+  .plan .mat { stroke: var(--encre); stroke-width: 1.5; }
+  .plan .fanion { fill: var(--terracotta); }
+  .plan .halo { fill: none; stroke: var(--terracotta); stroke-width: 2; opacity: 0.45; }
+  .plan .marq { fill: var(--terracotta); stroke: #fff; stroke-width: 1.5; }
+  .plan .marq.putt { fill: var(--gris); }
+  .plan .num { fill: #fff; font: 600 9px -apple-system, Arial, sans-serif; text-anchor: middle; }
+  .plan .lbl { fill: var(--encre); font: 10px -apple-system, Arial, sans-serif; text-anchor: middle; paint-order: stroke; stroke: #E5EADD; stroke-width: 3; stroke-linejoin: round; }
+  .plan .lbl.gauche { text-anchor: start; }
+  .plan .lbl.droite { text-anchor: end; }
+  .plan .echelle { stroke: var(--encre); stroke-width: 1.5; }
+  .plan-vide { background: var(--creme); border-radius: 10px; padding: 28px 16px; text-align: center; color: var(--gris); font-size: 14px; line-height: 1.4; }
   .alerte { background: #F3E1D7; color: #7A3A22; border-radius: 10px; padding: 10px 12px; font-size: 13px; line-height: 1.4; margin-bottom: 14px; }
 
   /* Synthèse */
@@ -180,6 +207,21 @@ const CLUBS_DEFAUT = ["Driver", "Hybride", "Fer 7", "Fer 9", "PW", "SW", "Putter
 const PENALITE = "Pénalité";
 const estPutt = c => /putter/i.test(c);
 
+// Clubs proposés dans « Mes clubs » (ordre = ordre d'affichage sur la page Partie)
+const CLUBS_GROUPES = [
+  ["Bois", ["Driver", "Bois 3", "Bois 5"]],
+  ["Hybrides", ["Hybride", "Hybride 3", "Hybride 4", "Hybride 5"]],
+  ["Fers", ["Fer 3", "Fer 4", "Fer 5", "Fer 6", "Fer 7", "Fer 8", "Fer 9"]],
+  ["Wedges", ["PW", "GW", "SW", "LW"]],
+  ["Putter", ["Putter"]]
+];
+const CLUBS_CONNUS = CLUBS_GROUPES.reduce((a, g) => a.concat(g[1]), []);
+function ordonnerClubs(liste) {
+  const l = [...new Set(liste.filter(c => c && c !== PENALITE))];
+  if (!l.some(estPutt)) l.push("Putter");
+  return CLUBS_CONNUS.filter(c => l.includes(c)).concat(l.filter(c => !CLUBS_CONNUS.includes(c)));
+}
+
 /* ---------- État ---------- */
 function etatInitial() {
   return { golfs: [], golfId: null, clubs: [...CLUBS_DEFAUT], objectifScore: "", drills: "", partie: null, vue: "accueil", catalogue: [], releves: {}, departs: {} };
@@ -189,6 +231,7 @@ function charger() {
     const brut = localStorage.getItem(CLE);
     if (brut) {
       const e = Object.assign(etatInitial(), JSON.parse(brut));
+      e.clubs = ordonnerClubs(Array.isArray(e.clubs) ? e.clubs : CLUBS_DEFAUT);
       if (e.partie) e.partie.trous.forEach(t => t.coups.forEach(c => { if (c.gps === "attente") c.gps = "echec"; }));
       return e;
     }
@@ -198,7 +241,7 @@ function charger() {
 function sauver() { try { localStorage.setItem(CLE, JSON.stringify(S)); } catch (e) {} }
 
 let S = charger();
-const ui = { ajout: false, form: { nom: "", nbTrous: 18, pos: false }, proche: "", distGreen: null };
+const ui = { proche: "", distGreen: null, clubChoisi: null, catMsg: "" };
 const app = document.getElementById("app");
 
 /* ---------- Utilitaires ---------- */
@@ -208,12 +251,12 @@ const signe = d => d === 0 ? "E" : d > 0 ? "+" + d : String(d);
 const dateLongue = d => d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 const pluriel = (n, mot) => n + " " + mot + (n > 1 ? "s" : "");
 
-function toast(m) {
+function toast(m, ms = 2000) {
   const t = document.getElementById("toast");
   t.textContent = m;
   t.classList.add("visible");
   clearTimeout(toast.h);
-  toast.h = setTimeout(() => t.classList.remove("visible"), 2000);
+  toast.h = setTimeout(() => t.classList.remove("visible"), ms);
 }
 
 function distanceM(lat1, lng1, lat2, lng2) {
@@ -234,17 +277,15 @@ function position() {
 function catGolf(id) { return (S.catalogue || []).find(c => c.id === id) || null; }
 function catTrous(id) { const c = catGolf(id); return c && Array.isArray(c.trous) && c.trous.length ? c.trous : null; }
 
-// Golfs du catalogue + golfs ajoutés à la main. Un golf du catalogue sans données de trous
-// garde ses pars/distances saisis dans S.golfs (entrée de même id).
+// Golfs du catalogue (golfs.json). Un golf sans données de trous garde les pars/distances
+// saisis dans S.golfs (entrée de même id).
 function listeGolfs() {
-  const cat = (S.catalogue || []).map(c => {
+  return (S.catalogue || []).map(c => {
     const n = c.nbTrous || (c.trous && c.trous.length) || 18;
     const ov = S.golfs.find(x => x.id === c.id);
     const holes = ov && ov.holes && ov.holes.length === n ? ov.holes : Array.from({ length: n }, () => ({ par: 4, distance: "" }));
-    return { id: c.id, nom: c.nom, nbTrous: n, holes, lat: c.lat != null ? c.lat : null, lng: c.lng != null ? c.lng : null, cat: true };
+    return { id: c.id, nom: c.nom, nbTrous: n, holes, lat: c.lat != null ? c.lat : null, lng: c.lng != null ? c.lng : null };
   });
-  const ids = new Set(cat.map(x => x.id));
-  return cat.concat(S.golfs.filter(g => !ids.has(g.id)));
 }
 function golfCourant() { return listeGolfs().find(g => g.id === S.golfId) || null; }
 
@@ -283,34 +324,115 @@ function pointTrou(id, n, type) {
   return h && h[type] && h[type].lat != null ? h[type] : null;
 }
 
-function cartePositions(p, i) {
-  const n = i + 1;
+/* Plan du trou : schéma SVG tracé d'après les positions GPS (tee, green, coups validés).
+   Projection locale à plat, puis rotation pour que le tee soit à gauche et le green à droite
+   quand les deux sont connus ; sinon le nord est en haut. Aucun relief ni obstacle. */
+function planSvg(p, i) {
+  const n = i + 1, t = p.trous[i];
+  const pts = [];
+  const tee = pointTrou(p.golfId, n, "tee"), gr = pointTrou(p.golfId, n, "green");
+  if (tee) pts.push({ type: "tee", lat: tee.lat, lng: tee.lng });
+  if (gr) pts.push({ type: "green", lat: gr.lat, lng: gr.lng });
+  t.coups.forEach((c, k) => {
+    if (c.club !== PENALITE && c.lat != null) pts.push({ type: "coup", k, club: c.club, lat: c.lat, lng: c.lng });
+  });
+  if (!pts.length) {
+    return { vide: true, tourne: false, longueur: null,
+      html: `<div class="plan-vide">Le plan se dessinera à partir de tes positions : valide un coup, ou relève le tee et le green.</div>` };
+  }
+
+  const lat0 = pts.reduce((a, q) => a + q.lat, 0) / pts.length, lng0 = pts.reduce((a, q) => a + q.lng, 0) / pts.length;
+  const K = 111195, cl = Math.cos(lat0 * Math.PI / 180);
+  pts.forEach(q => { q.x = (q.lng - lng0) * K * cl; q.y = (q.lat - lat0) * K; });
+  const T = pts.find(q => q.type === "tee"), G = pts.find(q => q.type === "green");
+  let ex = 1, ey = 0, tourne = false, longueur = null;
+  if (T && G) {
+    const dx = G.x - T.x, dy = G.y - T.y, L = Math.hypot(dx, dy);
+    if (L >= 1) { ex = dx / L; ey = dy / L; tourne = true; longueur = distanceM(T.lat, T.lng, G.lat, G.lng); }
+  }
+  pts.forEach(q => { q.a = q.x * ex + q.y * ey; q.c = q.y * ex - q.x * ey; });
+
+  const W = 340, H = 150, mx = 32, my = 34;
+  const A = pts.map(q => q.a), C = pts.map(q => q.c);
+  const a0 = Math.min(...A), a1 = Math.max(...A), c0 = Math.min(...C), c1 = Math.max(...C);
+  const s = Math.min((W - 2 * mx) / Math.max(a1 - a0, 60), (H - 2 * my) / Math.max(c1 - c0, 40));
+  pts.forEach(q => { q.X = W / 2 + (q.a - (a0 + a1) / 2) * s; q.Y = H / 2 - (q.c - (c0 + c1) / 2) * s; });
+  const f = v => v.toFixed(1);
+  const etiq = (q, txt) => `<text class="lbl" x="${f(q.X)}" y="${f(q.Y + 22)}">${txt}</text>`;
+
+  let g = `<rect class="fond" x="0" y="0" width="${W}" height="${H}" rx="10"/>`;
+  if (tourne) {
+    g += `<line class="axe" x1="${f(T.X)}" y1="${f(T.Y)}" x2="${f(G.X)}" y2="${f(G.Y)}"/>`
+      + `<text class="lbl" x="${f((T.X + G.X) / 2)}" y="${f(T.Y - 8)}">${Math.round(longueur)} m</text>`;
+  }
+  if (T) g += `<rect class="tee" x="${f(T.X - 6)}" y="${f(T.Y - 6)}" width="12" height="12" rx="2"/>${etiq(T, "Tee")}`;
+  if (G) {
+    g += `<circle class="green" cx="${f(G.X)}" cy="${f(G.Y)}" r="8"/>`
+      + `<line class="mat" x1="${f(G.X)}" y1="${f(G.Y)}" x2="${f(G.X)}" y2="${f(G.Y - 18)}"/>`
+      + `<path class="fanion" d="M${f(G.X)} ${f(G.Y - 18)} l10 4.5 l-10 4.5z"/>${etiq(G, "Green")}`;
+  }
+
+  const cp = pts.filter(q => q.type === "coup");
+  if (cp.length > 1) g += `<polyline class="trace" points="${cp.map(q => f(q.X) + "," + f(q.Y)).join(" ")}"/>`;
+  for (let j = 0; j < cp.length - 1; j++) {
+    const u = cp[j], v = cp[j + 1];
+    if (v.k !== u.k + 1) continue; // une pénalité s'intercale : pas de distance fiable
+    const d = distanceM(u.lat, u.lng, v.lat, v.lng), px = Math.hypot(v.X - u.X, v.Y - u.Y);
+    if (d >= 10 && px >= 40) g += `<text class="lbl" x="${f((u.X + v.X) / 2)}" y="${f((u.Y + v.Y) / 2 - 8)}">${Math.round(d)} m</text>`;
+  }
+  cp.forEach((q, j) => {
+    if (j === cp.length - 1) g += `<circle class="halo" cx="${f(q.X)}" cy="${f(q.Y)}" r="13"/>`;
+    g += `<circle class="marq${estPutt(q.club) ? " putt" : ""}" cx="${f(q.X)}" cy="${f(q.Y)}" r="8"/>`
+      + `<text class="num" x="${f(q.X)}" y="${f(q.Y)}" dy=".35em">${q.k + 1}</text>`;
+  });
+
+  const bar = [10, 20, 50, 100, 200, 500].filter(v => v * s <= 110).pop() || 10, x2 = f(12 + bar * s);
+  g += `<line class="echelle" x1="12" y1="18" x2="${x2}" y2="18"/><line class="echelle" x1="12" y1="14" x2="12" y2="22"/>`
+    + `<line class="echelle" x1="${x2}" y1="14" x2="${x2}" y2="22"/><text class="lbl gauche" x="12" y="11">${bar} m</text>`;
+  if (!tourne) g += `<text class="lbl droite" x="${W - 12}" y="14">N ↑</text>`;
+
+  return { vide: false, tourne, longueur,
+    html: `<svg class="plan" viewBox="0 0 ${W} ${H}" role="img" aria-label="Plan du trou ${n}">${g}</svg>` };
+}
+
+function cartePlan(p, i) {
+  const n = i + 1, pl = planSvg(p, i);
   const lib = pt => pt ? (pt.acc != null ? "✓ ±" + pt.acc + " m" : "✓ catalogue") : "à relever";
+  const legende = pl.tourne ? `Tee à gauche, green à droite · tee → green ≈ ${Math.round(pl.longueur)} m (GPS).`
+    : "Nord en haut : relève le tee et le green pour orienter le trou.";
   const dg = ui.distGreen && ui.distGreen.trou === i
     ? `<p class="note"><b>Green à ≈ ${Math.round(ui.distGreen.d)} m</b> depuis l'endroit où tu étais au moment du calcul.</p>` : "";
-  return `<section class="carte"><h2>Positions du trou</h2>
-    <div class="rangee">
+  return `<section class="carte"><h2>Plan du trou</h2>
+    ${pl.html}
+    ${pl.vide ? "" : `<p class="note">${legende} Schéma indicatif, sans relief ni obstacles.</p>`}
+    <div class="rangee trois">
       <button class="btn secondaire" data-action="relever" data-v="tee">Relever le tee<br><small>${lib(pointTrou(p.golfId, n, "tee"))}</small></button>
       <button class="btn secondaire" data-action="relever" data-v="green">Relever le green<br><small>${lib(pointTrou(p.golfId, n, "green"))}</small></button>
+      <button class="btn secondaire" data-action="distGreen">Distance au green</button>
     </div>
-    <button class="btn secondaire plein" style="margin-top:10px" data-action="distGreen">Distance au green</button>
-    ${dg}
-    <p class="note">Place-toi sur le tee, puis au centre du green, et appuie. « Copier les positions » permet ensuite de les ajouter au catalogue.</p>
+    ${dg}</section>`;
+}
+
+function carteReleves() {
+  return `<section class="carte"><h2>Relevés GPS</h2>
+    <p class="note">Pour dessiner et mesurer le trou : place-toi sur le tee et appuie sur « Relever le tee », puis fais de même au centre du green. « Copier les positions relevées » permet ensuite de les ajouter au catalogue.</p>
     <button class="lien" data-action="copierReleves">Copier les positions relevées</button>
     <pre class="recap" id="recap-pos" style="display:none"></pre></section>`;
 }
 
+// Renvoie true si le catalogue a pu être chargé
 async function chargerCatalogue() {
   try {
     const r = await fetch("golfs.json", { cache: "no-cache" });
-    if (!r.ok) return;
+    if (!r.ok) return false;
     const j = await r.json();
-    if (!j || !Array.isArray(j.golfs)) return;
+    if (!j || !Array.isArray(j.golfs) || !j.golfs.length) return false;
     S.catalogue = j.golfs;
     sauver();
     const a = document.activeElement;
     if (!a || a === document.body) render();
-  } catch (e) { /* hors ligne : on garde le catalogue déjà enregistré */ }
+    return true;
+  } catch (e) { return false; /* hors ligne : on garde le catalogue déjà enregistré */ }
 }
 
 async function copierTexte(texte, preId, msg) {
@@ -320,14 +442,6 @@ async function copierTexte(texte, preId, msg) {
     if (r) { r.textContent = texte; r.style.display = "block"; }
     toast("Copie impossible : sélectionne le texte");
   }
-}
-
-function parseClubs(txt) {
-  const l = txt.split(/[,;\n]/).map(s => s.trim()).filter(s => s && s !== PENALITE);
-  const uniq = [...new Set(l)];
-  if (!uniq.length) return [...CLUBS_DEFAUT];
-  if (!uniq.some(estPutt)) uniq.push("Putter");
-  return uniq;
 }
 
 /* ---------- Calculs ---------- */
@@ -399,13 +513,25 @@ function objectifTexte(p, c) {
 }
 
 /* ---------- Géolocalisation d'un coup ---------- */
-function localiser(coup) {
+function localiser(coup, trou) {
   if (!navigator.geolocation) { coup.gps = "indispo"; sauver(); render(); return; }
   navigator.geolocation.getCurrentPosition(
-    p => { coup.lat = p.coords.latitude; coup.lng = p.coords.longitude; coup.acc = p.coords.accuracy; coup.gps = "ok"; sauver(); render(); },
+    p => {
+      coup.lat = p.coords.latitude; coup.lng = p.coords.longitude; coup.acc = p.coords.accuracy; coup.gps = "ok";
+      sauver(); render(); retombee(coup, trou);
+    },
     err => { coup.gps = err && err.code === 1 ? "refuse" : "echec"; sauver(); render(); },
     { enableHighAccuracy: true, timeout: 12000, maximumAge: 3000 }
   );
+}
+// Où est tombé le coup précédent : distance entre sa position de départ et celle du coup qu'on vient de valider
+function retombee(coup, trou) {
+  const k = trou.coups.indexOf(coup);
+  if (k < 1) return;
+  const a = trou.coups[k - 1];
+  if (a.club === PENALITE || a.lat == null) return;
+  const d = distanceM(a.lat, a.lng, coup.lat, coup.lng);
+  if (d >= 1) toast(`Coup précédent (${a.club}) : ≈ ${Math.round(d)} m`, 3500);
 }
 function libGps(c) {
   if (c.club === PENALITE) return "";
@@ -418,7 +544,6 @@ function libGps(c) {
 /* ---------- Vues ---------- */
 function vueAccueil() {
   const g = golfCourant();
-  const formVisible = ui.ajout || listeGolfs().length === 0;
   let h = `<header class="page"><h1>Golf</h1><div class="sous">${esc(dateLongue(new Date()))}</div></header>`;
 
   if (S.partie) {
@@ -433,31 +558,16 @@ function vueAccueil() {
   }
 
   h += `<section class="carte"><h2>Parcours</h2>`;
-  if (formVisible) {
-    h += `<div class="champ"><label for="f-nom">Nom du golf</label>
-        <input type="text" id="f-nom" data-f="formNom" value="${esc(ui.form.nom)}" placeholder="Nom du golf"></div>
-      <div class="champ"><label>Nombre de trous</label><div class="segment">
-        <button data-action="formTrous" data-v="9" class="${ui.form.nbTrous === 9 ? "on" : ""}">9</button>
-        <button data-action="formTrous" data-v="18" class="${ui.form.nbTrous === 18 ? "on" : ""}">18</button>
-      </div></div>
-      <label class="check"><input type="checkbox" data-f="formPos" ${ui.form.pos ? "checked" : ""}> Enregistrer ma position (je suis sur place)</label>
-      <div class="rangee">
-        <button class="btn principal" data-action="enregistrerGolf">Ajouter ce golf</button>
-        ${listeGolfs().length ? `<button class="btn secondaire" data-action="annulerGolf">Annuler</button>` : ""}
-      </div>
-      <p class="note">La position sert uniquement à te proposer le golf le plus proche. Elle reste sur ton appareil.</p>`;
+  if (!g) {
+    h += `<p class="note">${esc(ui.catMsg || "La liste des golfs n'a pas pu être chargée : une connexion est nécessaire au premier lancement.")}</p>
+      <button class="btn secondaire plein" style="margin-top:10px" data-action="rechargerCatalogue">Réessayer</button>`;
   } else {
     const options = listeGolfs().map(x => `<option value="${esc(x.id)}" ${x.id === S.golfId ? "selected" : ""}>${esc(x.nom)}</option>`).join("");
     h += `<div class="champ"><label for="sel-golf">Golf</label><select id="sel-golf" data-f="golfId">${options}</select></div>
       <button class="btn secondaire plein" data-action="proche" style="margin-top:10px">Utiliser ma position</button>
       ${ui.proche ? `<p class="note">${esc(ui.proche)}</p>` : ""}
-      <p class="note">${g.nbTrous} trous · ${g.cat ? "fiche du catalogue" : g.lat != null ? "position enregistrée" : "position non enregistrée"}${g.cat && !catTrous(g.id) ? " · pars et distances à renseigner" : ""}</p>
-      ${departBloc(g)}
-      <div class="rangee">
-        <button class="lien" data-action="ajouterGolf">Ajouter un golf</button>
-        ${g.cat ? "" : `<button class="lien" data-action="positionGolf">Enregistrer ma position pour ce golf</button>`}
-        ${g.cat ? "" : `<button class="lien danger" data-action="supprimerGolf">Supprimer ce golf</button>`}
-      </div>`;
+      <p class="note">${g.nbTrous} trous${!catTrous(g.id) ? " · pars et distances à renseigner" : ""}</p>
+      ${departBloc(g)}`;
   }
   h += `</section>`;
 
@@ -466,13 +576,23 @@ function vueAccueil() {
       <input type="number" id="obj" inputmode="numeric" data-f="objectifScore" value="${esc(S.objectifScore)}" placeholder="Score visé"></div>
     <div class="champ"><label for="drills">Drills à travailler</label>
       <textarea id="drills" data-f="drills" placeholder="Un drill par ligne">${esc(S.drills)}</textarea></div>
-    <div class="champ"><details><summary>Mes clubs</summary>
-      <input type="text" data-f="clubs" value="${esc(S.clubs.join(", "))}" aria-label="Liste des clubs séparés par des virgules">
-      <p class="note">Sépare les clubs par des virgules. Le putter est toujours conservé.</p></details></div>
   </section>`;
 
-  h += `<button class="btn principal plein" data-action="demarrer">${S.partie ? "Nouvelle partie" : "Commencer la partie"}</button>`;
+  h += carteClubs();
+
+  h += `<button class="btn principal plein" data-action="demarrer" ${g ? "" : "disabled"}>${S.partie ? "Nouvelle partie" : "Commencer la partie"}</button>`;
   return h;
+}
+
+function carteClubs() {
+  const sel = new Set(S.clubs);
+  const autres = S.clubs.filter(c => !CLUBS_CONNUS.includes(c));
+  const groupes = CLUBS_GROUPES.concat(autres.length ? [["Autres", autres]] : []);
+  const puce = c => `<button class="puce${sel.has(c) ? " on" : ""}" data-action="clubToggle" data-club="${esc(c)}" aria-pressed="${sel.has(c)}">${esc(c)}</button>`;
+  return `<section class="carte"><h2>Mes clubs</h2>
+    ${groupes.map(([nom, liste]) => `<div class="groupe-clubs"><div class="lib-groupe">${esc(nom)}</div><div class="puces">${liste.map(puce).join("")}</div></div>`).join("")}
+    <p class="note">${pluriel(S.clubs.length, "club")} dans le sac (putter inclus). Touche un club pour l'ajouter ou le retirer : ils s'affichent sur la page Partie.</p>
+  </section>`;
 }
 
 function vuePartie() {
@@ -480,8 +600,11 @@ function vuePartie() {
   const st = statsTrou(t), dist = distancesTrou(t);
   const pastilles = p.trous.map((x, k) =>
     `<button class="pastille${k === i ? " actif" : ""}${x.coups.length ? " joue" : ""}" data-action="allerTrou" data-v="${k}" aria-label="Trou ${k + 1}">${k + 1}</button>`).join("");
-  const boutons = S.clubs.map(c => `<button class="${estPutt(c) ? "putter" : ""}" data-action="coup" data-club="${esc(c)}">${esc(c)}</button>`).join("")
-    + `<button class="pen" data-action="coup" data-club="${PENALITE}">Pénalité +1</button>`;
+  const choisi = S.clubs.includes(ui.clubChoisi) ? ui.clubChoisi : null;
+  const boutons = S.clubs.map(c => `<button class="${estPutt(c) ? "putter" : ""}${c === choisi ? " sel" : ""}" data-action="club" data-club="${esc(c)}" aria-pressed="${c === choisi}">${esc(c)}</button>`).join("")
+    + `<button class="pen" data-action="penalite">Pénalité +1</button>`;
+  const mesure = dist.map((d, k) => ({ d, k })).filter(x => x.d != null && x.d >= 1).pop();
+  const prec = mesure ? `<p class="prec">Coup précédent : <b>${esc(t.coups[mesure.k].club)}</b> · ≈ ${Math.round(mesure.d)} m</p>` : "";
   const liste = t.coups.length
     ? `<ul class="coups">${t.coups.map((c, k) => {
         const d = dist[k];
@@ -506,8 +629,10 @@ function vuePartie() {
     </div></section>
     <div class="pastilles">${pastilles}</div>
     ${refus}
-    <section class="carte"><h2>Quel club ?</h2><div class="grille-clubs">${boutons}</div>
-      <p class="note">Chaque appui enregistre le coup et ta position GPS à cet instant.</p></section>
+    <section class="carte"><h2>Quel club ?</h2>${prec}<div class="grille-clubs">${boutons}</div>
+      <button class="btn principal plein" style="margin-top:12px" data-action="valider" ${choisi ? "" : "disabled"}>Valider le coup${choisi ? " · " + esc(choisi) : ""}</button>
+      <p class="note">Choisis ton club, puis appuie sur « Valider le coup » à côté de ta balle, avant de frapper : ta position est enregistrée et indique où est tombé le coup précédent.</p></section>
+    ${cartePlan(p, i)}
     <section class="carte">
       <div class="score-trou">
         <div><div class="gros">${st.n}</div><div class="sous">${pluriel(st.n, "coup")} · ${pluriel(st.putts, "putt")}</div></div>
@@ -520,7 +645,7 @@ function vuePartie() {
       <div class="champ"><label for="dist">Distance (m)</label>
         <input type="number" id="dist" inputmode="numeric" data-f="distance" value="${esc(t.distance)}" placeholder="Distance"></div>
       <p class="note">${catTrous(p.golfId) ? "Par et distance viennent du catalogue (départ " + esc(p.depart || "") + ") ; tes modifications ne valent que pour cette partie." : "Par et distance sont mémorisés pour ce golf."}</p></section>
-    ${cartePositions(p, i)}`;
+    ${carteReleves()}`;
 }
 
 function barres(lignes) {
@@ -660,47 +785,24 @@ function majGolfTrou() {
 
 const ACTIONS = {
   vue(b) { S.vue = b.dataset.v; sauver(); render(true); },
-  ajouterGolf() { ui.ajout = true; ui.form = { nom: "", nbTrous: 18, pos: false }; render(); },
-  annulerGolf() { ui.ajout = false; render(); },
-  formTrous(b) { ui.form.nbTrous = Number(b.dataset.v); render(); },
+  async rechargerCatalogue() {
+    ui.catMsg = "Chargement de la liste…"; render();
+    const ok = await chargerCatalogue();
+    ui.catMsg = ok ? "" : "Toujours impossible de charger la liste : vérifie ta connexion internet, puis réessaie.";
+    render();
+  },
 
-  async enregistrerGolf() {
-    const champ = document.querySelector('[data-f="formNom"]');
-    const nom = (champ ? champ.value : ui.form.nom).trim();
-    if (!nom) { toast("Donne un nom au golf"); return; }
-    const n = ui.form.nbTrous;
-    const g = { id: Date.now().toString(36), nom, nbTrous: n, holes: Array.from({ length: n }, () => ({ par: 4, distance: "" })), lat: null, lng: null };
-    if (ui.form.pos) {
-      try { const p = await position(); g.lat = p.coords.latitude; g.lng = p.coords.longitude; }
-      catch (e) { toast("Position non enregistrée"); }
-    }
-    S.golfs.push(g); S.golfId = g.id; ui.ajout = false; ui.proche = "";
+  clubToggle(b) {
+    const c = b.dataset.club;
+    if (estPutt(c)) { toast("Le putter reste toujours dans le sac"); return; }
+    S.clubs = ordonnerClubs(S.clubs.includes(c) ? S.clubs.filter(x => x !== c) : S.clubs.concat(c));
     sauver(); render();
-  },
-
-  async positionGolf() {
-    const g = golfCourant(); if (!g) return;
-    if (g.cat) { toast("Position fournie par le catalogue"); return; }
-    try {
-      const p = await position();
-      g.lat = p.coords.latitude; g.lng = p.coords.longitude;
-      sauver(); toast("Position enregistrée pour " + g.nom); render();
-    } catch (e) { toast("Position indisponible"); }
-  },
-
-  supprimerGolf() {
-    const g = golfCourant(); if (!g) return;
-    if (g.cat) { toast("Ce golf vient du catalogue"); return; }
-    if (!confirm(`Supprimer « ${g.nom} » de ta liste ?`)) return;
-    S.golfs = S.golfs.filter(x => x.id !== g.id);
-    S.golfId = listeGolfs().length ? listeGolfs()[0].id : null;
-    ui.proche = ""; sauver(); render();
   },
 
   async proche() {
     const avec = listeGolfs().filter(g => g.lat != null);
     if (!avec.length) {
-      ui.proche = "Aucun golf n'a de position enregistrée. Utilise « Enregistrer ma position pour ce golf » une fois sur place.";
+      ui.proche = "Aucun golf de la liste n'a de position GPS : choisis ton golf dans la liste.";
       render(); return;
     }
     ui.proche = "Recherche de ta position…"; render();
@@ -722,7 +824,7 @@ const ACTIONS = {
 
   demarrer() {
     const g = golfCourant();
-    if (!g) { toast("Choisis ou ajoute un golf"); return; }
+    if (!g) { toast("Choisis un golf"); return; }
     if (S.partie && !confirm("Une partie est déjà en cours. La remplacer par une nouvelle ?")) return;
     S.partie = {
       golfId: g.id, golfNom: g.nom, date: new Date().toISOString(), depart: departChoisi(g.id),
@@ -732,22 +834,32 @@ const ACTIONS = {
         : g.holes.map(h => ({ par: h.par, distance: h.distance, coups: [] })),
       trouActif: 0, ressenti: "", priorite: "", notes: ""
     };
-    S.vue = "partie"; sauver(); render(true);
+    ui.clubChoisi = null; S.vue = "partie"; sauver(); render(true);
   },
   reprendre() { S.vue = "partie"; sauver(); render(true); },
 
-  coup(b) {
+  club(b) { ui.clubChoisi = ui.clubChoisi === b.dataset.club ? null : b.dataset.club; render(); },
+
+  // Enregistre le coup tout de suite (rien n'est perdu si le GPS échoue), puis lui associe la position
+  valider() {
+    const c = ui.clubChoisi;
+    if (!c || !S.clubs.includes(c)) { toast("Choisis d'abord un club"); return; }
     const t = S.partie.trous[S.partie.trouActif];
-    const coup = { club: b.dataset.club, t: Date.now(), lat: null, lng: null, acc: null, gps: b.dataset.club === PENALITE ? "aucun" : "attente" };
+    const coup = { club: c, t: Date.now(), lat: null, lng: null, acc: null, gps: "attente" };
     t.coups.push(coup);
+    ui.clubChoisi = null;
     sauver(); render();
-    if (coup.gps === "attente") localiser(coup);
+    localiser(coup, t);
+  },
+  penalite() {
+    S.partie.trous[S.partie.trouActif].coups.push({ club: PENALITE, t: Date.now(), lat: null, lng: null, acc: null, gps: "aucun" });
+    sauver(); render();
   },
   supprimerCoup(b) { S.partie.trous[S.partie.trouActif].coups.splice(Number(b.dataset.v), 1); sauver(); render(); },
   par(b) { S.partie.trous[S.partie.trouActif].par = Number(b.dataset.v); majGolfTrou(); sauver(); render(); },
-  trouPrec() { if (S.partie.trouActif > 0) { S.partie.trouActif--; sauver(); render(true); } },
-  trouSuiv() { if (S.partie.trouActif < S.partie.trous.length - 1) { S.partie.trouActif++; sauver(); render(true); } },
-  allerTrou(b) { S.partie.trouActif = Number(b.dataset.v); sauver(); render(true); },
+  trouPrec() { if (S.partie.trouActif > 0) { S.partie.trouActif--; ui.clubChoisi = null; sauver(); render(true); } },
+  trouSuiv() { if (S.partie.trouActif < S.partie.trous.length - 1) { S.partie.trouActif++; ui.clubChoisi = null; sauver(); render(true); } },
+  allerTrou(b) { S.partie.trouActif = Number(b.dataset.v); ui.clubChoisi = null; sauver(); render(true); },
 
   depart(b) { S.departs[S.golfId] = b.dataset.v; sauver(); render(); },
 
@@ -799,7 +911,7 @@ const ACTIONS = {
   },
   effacerPartie() {
     if (!confirm("Effacer cette partie ? Cette action est définitive.")) return;
-    S.partie = null; S.vue = "accueil"; sauver(); render(true);
+    S.partie = null; ui.clubChoisi = null; S.vue = "accueil"; sauver(); render(true);
   }
 };
 
@@ -815,7 +927,6 @@ document.addEventListener("input", e => {
   if (!f || e.target.type === "checkbox") return;
   const v = e.target.value;
   switch (f) {
-    case "formNom": ui.form.nom = v; return;
     case "objectifScore": S.objectifScore = v; break;
     case "drills": S.drills = v; break;
     case "ressenti": S.partie.ressenti = v; break;
@@ -830,9 +941,7 @@ document.addEventListener("input", e => {
 document.addEventListener("change", e => {
   const f = e.target.dataset && e.target.dataset.f;
   if (!f) return;
-  if (f === "formPos") { ui.form.pos = e.target.checked; return; }
-  if (f === "golfId") { S.golfId = e.target.value; ui.proche = ""; sauver(); render(); return; }
-  if (f === "clubs") { S.clubs = parseClubs(e.target.value); e.target.value = S.clubs.join(", "); sauver(); toast("Clubs mis à jour"); }
+  if (f === "golfId") { S.golfId = e.target.value; ui.proche = ""; sauver(); render(); }
 });
 
 render();
