@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Golf">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F4EFE6">
+<title>Golf · Scorecard</title>
+<style>
+  :root {
+    --creme: #F4EFE6;
+    --creme-fonce: #E9E1D2;
+    --sauge: #7D8F7A;
+    --sauge-fonce: #5C6E59;
+    --terracotta: #C0734F;
+    --encre: #2F2B26;
+    --gris: #8A8377;
+    --blanc: #FBF9F4;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background: var(--creme);
+    color: var(--encre);
+    padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    padding: 22px 4px 14px;
+  }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 400;
+    font-size: 28px;
+    letter-spacing: -0.2px;
+  }
+  .sous-titre { color: var(--gris); font-size: 14px; margin-top: 4px; }
+
+  .carte {
+    background: var(--blanc);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 2px rgba(47,43,38,0.06);
+  }
+  label { font-size: 13px; color: var(--gris); display: block; margin-bottom: 6px; }
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    font-size: 17px;
+    padding: 11px 12px;
+    border: 1px solid var(--creme-fonce);
+    border-radius: 10px;
+    background: var(--creme);
+    color: var(--encre);
+    font-family: inherit;
+  }
+  input:focus { outline: 2px solid var(--sauge); border-color: transparent; }
+
+  .trou-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .btn-nav {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    border: none;
+    background: var(--creme-fonce);
+    color: var(--encre);
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .btn-nav:disabled { opacity: 0.35; }
+  .numero-trou { text-align: center; }
+  .numero-trou .grand { font-family: Georgia, serif; font-size: 40px; line-height: 1; }
+  .numero-trou .petit { font-size: 12px; color: var(--gris); margin-top: 4px; }
+
+  .champs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .compteur {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 14px;
+    gap: 10px;
+  }
+  .compteur button {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    border: none;
+    background: var(--sauge);
+    color: #fff;
+    font-size: 26px;
+    cursor: pointer;
+  }
+  .compteur button.moins { background: var(--creme-fonce); color: var(--encre); }
+  .score-affiche { font-family: Georgia, serif; font-size: 48px; min-width: 80px; text-align: center; }
+  .diff { font-size: 13px; color: var(--gris); text-align: center; margin-top: 4px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 8px 4px; text-align: center; border-bottom: 1px solid var(--creme-fonce); }
+  th { color: var(--gris); font-weight: 500; font-size: 12px; }
+  td.gauche, th.gauche { text-align: left; }
+  tr.actif { background: rgba(125,143,122,0.14); }
+  tr { cursor: pointer; }
+
+  .totaux { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; }
+  .totaux .val { font-family: Georgia, serif; font-size: 26px; }
+  .totaux .lib { font-size: 12px; color: var(--gris); }
+
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 6px 0 24px; }
+  .actions button {
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .btn-principal { background: var(--sauge-fonce); color: #fff; }
+  .btn-secondaire { background: var(--creme-fonce); color: var(--encre); }
+  .btn-danger { background: transparent; color: var(--terracotta); border: 1px solid var(--terracotta) !important; }
+  .actions .plein { grid-column: 1 / -1; }
+
+  .recap {
+    white-space: pre-wrap;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 13px;
+    background: var(--creme);
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 10px;
+    display: none;
+  }
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
+    background: var(--encre); color: var(--blanc);
+    padding: 10px 16px; border-radius: 20px; font-size: 14px;
+    opacity: 0; transition: opacity .25s; pointer-events: none;
+  }
+  .toast.visible { opacity: 1; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Scorecard</h1>
+  <div class="sous-titre" id="date-affichee"></div>
+</header>
+
+<section class="carte">
+  <label for="parcours">Parcours</label>
+  <input type="text" id="parcours" placeholder="Nom du parcours">
+  <div style="height:10px"></div>
+  <label for="type">Type de séance</label>
+  <input type="text" id="type" placeholder="Parcours, practice…">
+</section>
+
+<section class="carte">
+  <div class="trou-nav">
+    <button class="btn-nav" id="prec" aria-label="Trou précédent">‹</button>
+    <div class="numero-trou">
+      <div class="grand" id="num-trou">1</div>
+      <div class="petit">Trou</div>
+    </div>
+    <button class="btn-nav" id="suiv" aria-label="Trou suivant">›</button>
+  </div>
+
+  <div class="champs">
+    <div>
+      <label for="par">Par</label>
+      <input type="number" id="par" min="3" max="6" inputmode="numeric">
+    </div>
+    <div>
+      <label for="distance">Distance (m)</label>
+      <input type="number" id="distance" min="0" inputmode="numeric">
+    </div>
+  </div>
+
+  <div class="compteur">
+    <button class="moins" id="moins" aria-label="Retirer un coup">−</button>
+    <div>
+      <div class="score-affiche" id="score">–</div>
+      <div class="diff" id="diff"></div>
+    </div>
+    <button id="plus" aria-label="Ajouter un coup">+</button>
+  </div>
+</section>
+
+<section class="carte">
+  <div class="totaux">
+    <div><div class="val" id="total-score">0</div><div class="lib">Score</div></div>
+    <div><div class="val" id="total-par">0</div><div class="lib">Par</div></div>
+    <div><div class="val" id="total-diff">E</div><div class="lib">Vs par</div></div>
+  </div>
+</section>
+
+<section class="carte">
+  <table>
+    <thead>
+      <tr><th class="gauche">Trou</th><th>Par</th><th>Coups</th><th>+/−</th></tr>
+    </thead>
+    <tbody id="tableau"></tbody>
+  </table>
+</section>
+
+<div class="actions">
+  <button class="btn-principal plein" id="generer">Générer le récap</button>
+  <button class="btn-secondaire" id="copier">Copier</button>
+  <button class="btn-danger" id="effacer">Effacer</button>
+</div>
+
+<pre class="recap" id="recap"></pre>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const NB_TROUS = 18;
+  const CLE = "golf-scorecard-v1";
+  let etat = charger();
+  let trouActif = 0;
+
+  function nouvelEtat() {
+    return {
+      parcours: "",
+      type: "",
+      trous: Array.from({ length: NB_TROUS }, () => ({ par: 4, distance: "", coups: null }))
+    };
+  }
+
+  function charger() {
+    try {
+      const brut = localStorage.getItem(CLE);
+      if (brut) return JSON.parse(brut);
+    } catch (e) {}
+    return nouvelEtat();
+  }
+
+  function sauver() {
+    try { localStorage.setItem(CLE, JSON.stringify(etat)); } catch (e) {}
+  }
+
+  function toast(message) {
+    const t = document.getElementById("toast");
+    t.textContent = message;
+    t.classList.add("visible");
+    setTimeout(() => t.classList.remove("visible"), 1400);
+  }
+
+  function libelleDiff(d) {
+    if (d === 0) return "E";
+    return d > 0 ? "+" + d : String(d);
+  }
+
+  function rafraichir() {
+    const trou = etat.trous[trouActif];
+    document.getElementById("num-trou").textContent = trouActif + 1;
+    document.getElementById("prec").disabled = trouActif === 0;
+    document.getElementById("suiv").disabled = trouActif === NB_TROUS - 1;
+
+    document.getElementById("par").value = trou.par;
+    document.getElementById("distance").value = trou.distance;
+
+    const score = document.getElementById("score");
+    const diff = document.getElementById("diff");
+    if (trou.coups === null) {
+      score.textContent = "–";
+      diff.textContent = "";
+    } else {
+      score.textContent = trou.coups;
+      const d = trou.coups - trou.par;
+      diff.textContent = d === 0 ? "par" : (d < 0 ? "birdie ou mieux" : "+" + d + " par rapport au par");
+    }
+
+    const tbody = document.getElementById("tableau");
+    tbody.innerHTML = "";
+    etat.trous.forEach((t, i) => {
+      const tr = document.createElement("tr");
+      if (i === trouActif) tr.classList.add("actif");
+      const d = t.coups === null ? "" : libelleDiff(t.coups - t.par);
+      tr.innerHTML =
+        `<td class="gauche">${i + 1}</td>` +
+        `<td>${t.par}</td>` +
+        `<td>${t.coups === null ? "–" : t.coups}</td>` +
+        `<td>${d}</td>`;
+      tr.addEventListener("click", () => { trouActif = i; rafraichir(); });
+      tbody.appendChild(tr);
+    });
+
+    const joues = etat.trous.filter(t => t.coups !== null);
+    const totalScore = joues.reduce((s, t) => s + t.coups, 0);
+    const totalPar = joues.reduce((s, t) => s + t.par, 0);
+    document.getElementById("total-score").textContent = totalScore;
+    document.getElementById("total-par").textContent = totalPar;
+    document.getElementById("total-diff").textContent = libelleDiff(totalScore - totalPar);
+
+    sauver();
+  }
+
+  document.getElementById("date-affichee").textContent =
+    new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+
+  document.getElementById("parcours").value = etat.parcours || "";
+  document.getElementById("type").value = etat.type || "";
+  document.getElementById("parcours").addEventListener("input", e => { etat.parcours = e.target.value; sauver(); });
+  document.getElementById("type").addEventListener("input", e => { etat.type = e.target.value; sauver(); });
+
+  document.getElementById("par").addEventListener("change", e => {
+    etat.trous[trouActif].par = parseInt(e.target.value, 10) || 4;
+    rafraichir();
+  });
+  document.getElementById("distance").addEventListener("change", e => {
+    etat.trous[trouActif].distance = e.target.value;
+    sauver();
+  });
+
+  document.getElementById("plus").addEventListener("click", () => {
+    const t = etat.trous[trouActif];
+    t.coups = (t.coups === null ? t.par : t.coups + 1);
+    rafraichir();
+  });
+  document.getElementById("moins").addEventListener("click", () => {
+    const t = etat.trous[trouActif];
+    if (t.coups === null) return;
+    t.coups = t.coups > 1 ? t.coups - 1 : null;
+    rafraichir();
+  });
+
+  document.getElementById("prec").addEventListener("click", () => { if (trouActif > 0) { trouActif--; rafraichir(); } });
+  document.getElementById("suiv").addEventListener("click", () => { if (trouActif < NB_TROUS - 1) { trouActif++; rafraichir(); } });
+
+  function genererRecap() {
+    const date = new Date().toLocaleDateString("fr-FR");
+    const joues = etat.trous.filter(t => t.coups !== null);
+    const totalScore = joues.reduce((s, t) => s + t.coups, 0);
+    const totalPar = joues.reduce((s, t) => s + t.par, 0);
+    const lignes = etat.trous.map((t, i) =>
+      `T${i + 1} : par ${t.par}, ${t.coups === null ? "non joué" : t.coups + " coups (" + libelleDiff(t.coups - t.par) + ")"}`
+    );
+    return [
+      `Séance Golf · ${date}`,
+      etat.parcours ? `Parcours : ${etat.parcours}` : null,
+      etat.type ? `Type : ${etat.type}` : null,
+      "",
+      ...lignes,
+      "",
+      `Total : ${totalScore} coups pour un par de ${totalPar} (${libelleDiff(totalScore - totalPar)})`
+    ].filter(l => l !== null).join("\n");
+  }
+
+  document.getElementById("generer").addEventListener("click", () => {
+    const r = document.getElementById("recap");
+    r.textContent = genererRecap();
+    r.style.display = "block";
+  });
+
+  document.getElementById("copier").addEventListener("click", async () => {
+    const texte = genererRecap();
+    try {
+      await navigator.clipboard.writeText(texte);
+      toast("Récap copié");
+    } catch (e) {
+      const r = document.getElementById("recap");
+      r.textContent = texte;
+      r.style.display = "block";
+      toast("Copie impossible : sélectionne le texte");
+    }
+  });
+
+  document.getElementById("effacer").addEventListener("click", () => {
+    if (!confirm("Effacer toute la séance en cours ?")) return;
+    etat = nouvelEtat();
+    trouActif = 0;
+    document.getElementById("parcours").value = "";
+    document.getElementById("type").value = "";
+    document.getElementById("recap").style.display = "none";
+    rafraichir();
+    toast("Séance effacée");
+  });
+
+  rafraichir();
+</script>
+</body>
+</html>
