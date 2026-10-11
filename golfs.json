@@ -1,7 +1,7 @@
 {
   "version": 2,
   "unite": "m",
-  "note": "Coordonnees = accueil du club (source : Google Places). Seul le depart jaune est conserve (celui que joue l'utilisateur). Distances en metres (unite deduite, les sources ne la precisant pas toujours). Sources : Mont-de-Marsan = site officiel du club (le jaune correspond au 'repere 3', confirme par l'utilisateur) ; Artiguelouve = carte de score officielle du golf (photo fournie par l'utilisateur) ; Hossegor et Ilbarritz = 1golf.eu (annuaire, pas le site officiel). Les positions tee/green de chaque trou seront ajoutees apres releve sur place.",
+  "note": "Coordonnees = accueil du club (source : Google Places). Seul le depart jaune est conserve (celui que joue l'utilisateur). Distances en metres (unite deduite, les sources ne la precisant pas toujours). Sources : Mont-de-Marsan = site officiel du club (le jaune correspond au 'repere 3', confirme par l'utilisateur) ; Artiguelouve = carte de score officielle du golf (photo fournie par l'utilisateur) ; Hossegor et Ilbarritz = 1golf.eu (annuaire, pas le site officiel). Les positions tee/green de chaque trou seront ajoutees apres releve sur place. Contours des trous (fairway, departs, green, bunkers, limites) : fichiers contours/<golf>.json extraits d'OpenStreetMap (contributeurs OSM, licence ODbL, https://www.openstreetmap.org/copyright) ; seul Hossegor pour l'instant.",
   "golfs": [
     {
       "id": "mont-de-marsan",
@@ -167,6 +167,7 @@
       "lng": -1.42526,
       "nbTrous": 18,
       "source": "https://www.1golf.eu/en/club/golf-club-d-hossegor/scorecard/",
+      "contours": "contours/hossegor.json",
       "trous": [
         {
           "n": 1,

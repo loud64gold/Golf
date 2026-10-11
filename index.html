@@ -136,21 +136,30 @@
   /* Plan du trou */
   svg.plan { display: block; width: 100%; height: auto; border-radius: 10px; }
   .plan .fond { fill: #E5EADD; }
+  .plan .hors { fill: #5F7459; }
+  .plan .rough { fill: #9DAE91; fill-rule: evenodd; }
+  .plan .fw { fill: #CADEB1; fill-rule: evenodd; }
+  .plan .zt { fill: #DCEAC0; stroke: #8FA486; stroke-width: 0.8; }
+  .plan .zg { fill: #E4F1C9; stroke: #6F8A66; stroke-width: 1; }
+  .plan .bk { fill: #EADFBE; stroke: #C4B386; stroke-width: 0.8; fill-rule: evenodd; }
+  .plan .ext { opacity: 0.5; }
   .plan .axe { stroke: var(--sauge-fonce); stroke-width: 1.5; stroke-dasharray: 5 4; opacity: 0.7; }
-  .plan .trace { fill: none; stroke: var(--terracotta); stroke-width: 2; stroke-linejoin: round; opacity: 0.75; }
+  .plan .trace { fill: none; stroke: var(--terracotta); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
   .plan .tee { fill: var(--encre); }
   .plan .green { fill: var(--sauge-fonce); stroke: #fff; stroke-width: 2; }
   .plan .mat { stroke: var(--encre); stroke-width: 1.5; }
-  .plan .fanion { fill: var(--terracotta); }
-  .plan .halo { fill: none; stroke: var(--terracotta); stroke-width: 2; opacity: 0.45; }
+  .plan .fanion { fill: var(--terracotta); stroke: #fff; stroke-width: 0.6; }
+  .plan .halo { fill: none; stroke: #fff; stroke-width: 2; opacity: 0.8; }
   .plan .marq { fill: var(--terracotta); stroke: #fff; stroke-width: 1.5; }
   .plan .marq.putt { fill: var(--gris); }
   .plan .num { fill: #fff; font: 600 9px -apple-system, Arial, sans-serif; text-anchor: middle; }
-  .plan .lbl { fill: var(--encre); font: 10px -apple-system, Arial, sans-serif; text-anchor: middle; paint-order: stroke; stroke: #E5EADD; stroke-width: 3; stroke-linejoin: round; }
+  .plan .lbl { fill: var(--encre); font: 10px -apple-system, Arial, sans-serif; text-anchor: middle; paint-order: stroke; stroke: rgba(244,239,230,0.92); stroke-width: 3; stroke-linejoin: round; }
   .plan .lbl.gauche { text-anchor: start; }
   .plan .lbl.droite { text-anchor: end; }
   .plan .echelle { stroke: var(--encre); stroke-width: 1.5; }
+  .plan .echelle-fond { stroke: rgba(244,239,230,0.92); stroke-width: 4; stroke-linecap: round; }
   .plan-vide { background: var(--creme); border-radius: 10px; padding: 28px 16px; text-align: center; color: var(--gris); font-size: 14px; line-height: 1.4; }
+  .note a { color: var(--sauge-fonce); }
   .alerte { background: #F3E1D7; color: #7A3A22; border-radius: 10px; padding: 10px 12px; font-size: 13px; line-height: 1.4; margin-bottom: 14px; }
 
   /* Synthèse */
@@ -247,6 +256,12 @@ let S = charger();
 const ui = { proche: "", distGreen: null, clubChoisi: null, catMsg: "" };
 const app = document.getElementById("app");
 
+/* Contours des trous (fichiers contours/<golf>.json, issus d'OpenStreetMap), gardés sur l'appareil pour jouer hors ligne */
+const CLE_CONTOURS = "golf-v2-contours";
+function lireContours() { try { return JSON.parse(localStorage.getItem(CLE_CONTOURS)) || {}; } catch (e) { return {}; } }
+let CONTOURS = lireContours();
+const contoursEnCours = new Set();
+
 /* ---------- Utilitaires ---------- */
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const fmt = (n, d = 1) => Number(n).toLocaleString("fr-FR", { maximumFractionDigits: d });
@@ -324,57 +339,107 @@ function pointTrou(id, n, type) {
   const r = S.releves[id] && S.releves[id][n] && S.releves[id][n][type];
   if (r) return r;
   const t = catTrous(id), h = t && t[n - 1];
-  return h && h[type] && h[type].lat != null ? h[type] : null;
+  if (h && h[type] && h[type].lat != null) return h[type];
+  const c = CONTOURS[id], o = c && Array.isArray(c.trous) ? c.trous.find(x => x.n === n) : null;
+  return o && o[type] ? { lat: o[type][0], lng: o[type][1], src: "osm" } : null;
 }
 
-/* Plan du trou : schéma SVG tracé d'après les positions GPS (tee, green, coups validés).
-   Projection locale à plat, puis rotation pour que le tee soit à gauche et le green à droite
-   quand les deux sont connus ; sinon le nord est en haut. Aucun relief ni obstacle. */
+/* Plan du trou : schéma SVG. Fond = contours OpenStreetMap du golf quand ils sont disponibles
+   (limites du parcours, fairway, départs, green, bunkers) ; par-dessus, tes coups validés :
+   points numérotés reliés par un trait. Projection locale à plat ; tee à gauche et green à droite
+   quand ils sont connus, sinon nord en haut. Aucun relief ni arbre. */
 function planSvg(p, i) {
   const n = i + 1, t = p.trous[i];
-  const pts = [];
+  const Cc = CONTOURS[p.golfId];
+  const CH = Cc && Array.isArray(Cc.trous) && Array.isArray(Cc.formes) && Array.isArray(Cc.limite)
+    ? Cc.trous.find(h => h.n === n && h.tee && h.green && Array.isArray(h.ligne)) || null : null;
   const tee = pointTrou(p.golfId, n, "tee"), gr = pointTrou(p.golfId, n, "green");
+  const pts = [];
   if (tee) pts.push({ type: "tee", lat: tee.lat, lng: tee.lng });
   if (gr) pts.push({ type: "green", lat: gr.lat, lng: gr.lng });
   t.coups.forEach((c, k) => {
     if (c.club !== PENALITE && c.lat != null) pts.push({ type: "coup", k, club: c.club, lat: c.lat, lng: c.lng });
   });
   if (!pts.length) {
-    return { vide: true, tourne: false, longueur: null,
+    return { vide: true, tourne: false, longueur: null, carte: false,
       html: `<div class="plan-vide">Le plan se dessinera à partir de tes positions : valide un coup, ou relève le tee et le green.</div>` };
   }
 
-  const lat0 = pts.reduce((a, q) => a + q.lat, 0) / pts.length, lng0 = pts.reduce((a, q) => a + q.lng, 0) / pts.length;
+  // Projection locale (en mètres) autour d'une origine
+  const lat0 = CH ? CH.tee[0] : pts.reduce((a, q) => a + q.lat, 0) / pts.length;
+  const lng0 = CH ? CH.tee[1] : pts.reduce((a, q) => a + q.lng, 0) / pts.length;
   const K = 111195, cl = Math.cos(lat0 * Math.PI / 180);
-  pts.forEach(q => { q.x = (q.lng - lng0) * K * cl; q.y = (q.lat - lat0) * K; });
+  const proj = (lat, lng) => ({ x: (lng - lng0) * K * cl, y: (lat - lat0) * K });
+  pts.forEach(q => Object.assign(q, proj(q.lat, q.lng)));
   const T = pts.find(q => q.type === "tee"), G = pts.find(q => q.type === "green");
-  let ex = 1, ey = 0, tourne = false, longueur = null;
-  if (T && G) {
-    const dx = G.x - T.x, dy = G.y - T.y, L = Math.hypot(dx, dy);
-    if (L >= 1) { ex = dx / L; ey = dy / L; tourne = true; longueur = distanceM(T.lat, T.lng, G.lat, G.lng); }
-  }
-  pts.forEach(q => { q.a = q.x * ex + q.y * ey; q.c = q.y * ex - q.x * ey; });
 
-  const W = 340, H = 150, mx = 32, my = 34;
-  const A = pts.map(q => q.a), C = pts.map(q => q.c);
-  const a0 = Math.min(...A), a1 = Math.max(...A), c0 = Math.min(...C), c1 = Math.max(...C);
-  const s = Math.min((W - 2 * mx) / Math.max(a1 - a0, 60), (H - 2 * my) / Math.max(c1 - c0, 40));
-  pts.forEach(q => { q.X = W / 2 + (q.a - (a0 + a1) / 2) * s; q.Y = H / 2 - (q.c - (c0 + c1) / 2) * s; });
+  // Orientation : axe tee → green de la carte s'il existe, sinon celui des positions connues
+  let ex = 1, ey = 0, tourne = false;
+  const axe = CH ? [proj(CH.tee[0], CH.tee[1]), proj(CH.green[0], CH.green[1])] : T && G ? [T, G] : null;
+  if (axe) {
+    const dx = axe[1].x - axe[0].x, dy = axe[1].y - axe[0].y, L = Math.hypot(dx, dy);
+    if (L >= 1) { ex = dx / L; ey = dy / L; tourne = true; }
+  }
+  const rot = q => ({ a: q.x * ex + q.y * ey, c: q.y * ex - q.x * ey });
+  pts.forEach(q => Object.assign(q, rot(q)));
+
+  // Ce qui cadre le dessin : tes positions + le trou courant (pas les trous voisins)
+  const cadre = pts.map(q => [q.a, q.c]);
+  const ajoute = ll => { const r = rot(proj(ll[0], ll[1])); cadre.push([r.a, r.c]); };
+  if (CH) {
+    CH.ligne.forEach(ajoute);
+    Cc.formes.forEach(x => { if (x.n === n && x.r[0]) x.r[0].forEach(ajoute); });
+  }
+  const A = cadre.map(c => c[0]), B = cadre.map(c => c[1]);
+  const a0 = Math.min(...A), a1 = Math.max(...A), c0 = Math.min(...B), c1 = Math.max(...B);
+  const W = 340, mx = 30, my = CH ? 24 : 34, larg = Math.max(a1 - a0, 60), haut = Math.max(c1 - c0, 40);
+  let H = 150, s = Math.min((W - 2 * mx) / larg, (H - 2 * my) / haut);
+  if (CH) {
+    s = Math.min((W - 2 * mx) / larg, (230 - 2 * my) / haut);
+    H = Math.max(120, Math.min(230, Math.round(haut * s + 2 * my)));
+  }
+  const aMid = (a0 + a1) / 2, cMid = (c0 + c1) / 2;
+  const X = a => W / 2 + (a - aMid) * s, Y = c => H / 2 - (c - cMid) * s;
   const f = v => v.toFixed(1);
+  pts.forEach(q => { q.X = X(q.a); q.Y = Y(q.c); });
+  const sv = ll => { const r = rot(proj(ll[0], ll[1])); return f(X(r.a)) + "," + f(Y(r.c)); };
+  const chemin = rings => rings.map(r => "M" + r.map(sv).join("L") + "Z").join("");
+  const visible = r0 => {
+    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+    r0.forEach(ll => { const r = rot(proj(ll[0], ll[1])), x = X(r.a), y = Y(r.c); x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); });
+    return x1 > -20 && x0 < W + 20 && y1 > -20 && y0 < H + 20;
+  };
   const etiq = (q, txt) => `<text class="lbl" x="${f(q.X)}" y="${f(q.Y + 22)}">${txt}</text>`;
 
-  let g = `<rect class="fond" x="0" y="0" width="${W}" height="${H}" rx="10"/>`;
-  if (tourne) {
-    g += `<line class="axe" x1="${f(T.X)}" y1="${f(T.Y)}" x2="${f(G.X)}" y2="${f(G.Y)}"/>`
-      + `<text class="lbl" x="${f((T.X + G.X) / 2)}" y="${f(T.Y - 8)}">${Math.round(longueur)} m</text>`;
+  let g = "";
+  if (CH) {
+    g += `<rect class="hors" x="0" y="0" width="${W}" height="${H}" rx="10"/>`
+      + `<path class="rough" d="${Cc.limite.map(chemin).join("")}"/>`;
+    // trous voisins estompés, trou courant au premier plan
+    const couche = (type, cls) => {
+      const L = Cc.formes.filter(x => x.t === type && x.r[0] && visible(x.r[0]));
+      return L.filter(x => x.n !== n).map(x => `<path class="${cls} ext" d="${chemin(x.r)}"/>`).join("")
+        + L.filter(x => x.n === n).map(x => `<path class="${cls}" d="${chemin(x.r)}"/>`).join("");
+    };
+    g += couche("fw", "fw") + couche("tee", "zt") + couche("gr", "zg") + couche("bk", "bk");
+  } else {
+    g += `<rect class="fond" x="0" y="0" width="${W}" height="${H}" rx="10"/>`;
+    if (tourne) {
+      g += `<line class="axe" x1="${f(T.X)}" y1="${f(T.Y)}" x2="${f(G.X)}" y2="${f(G.Y)}"/>`
+        + `<text class="lbl" x="${f((T.X + G.X) / 2)}" y="${f(T.Y - 8)}">${Math.round(distanceM(T.lat, T.lng, G.lat, G.lng))} m</text>`;
+    }
   }
-  if (T) g += `<rect class="tee" x="${f(T.X - 6)}" y="${f(T.Y - 6)}" width="12" height="12" rx="2"/>${etiq(T, "Tee")}`;
+  if (T) {
+    const w = CH ? 8 : 12;
+    g += `<rect class="tee" x="${f(T.X - w / 2)}" y="${f(T.Y - w / 2)}" width="${w}" height="${w}" rx="2"/>${etiq(T, "Tee")}`;
+  }
   if (G) {
-    g += `<circle class="green" cx="${f(G.X)}" cy="${f(G.Y)}" r="8"/>`
-      + `<line class="mat" x1="${f(G.X)}" y1="${f(G.Y)}" x2="${f(G.X)}" y2="${f(G.Y - 18)}"/>`
+    if (!CH) g += `<circle class="green" cx="${f(G.X)}" cy="${f(G.Y)}" r="8"/>`;
+    g += `<line class="mat" x1="${f(G.X)}" y1="${f(G.Y)}" x2="${f(G.X)}" y2="${f(G.Y - 18)}"/>`
       + `<path class="fanion" d="M${f(G.X)} ${f(G.Y - 18)} l10 4.5 l-10 4.5z"/>${etiq(G, "Green")}`;
   }
 
+  // Trajectoire : coups validés, numérotés comme dans la liste, reliés dans l'ordre
   const cp = pts.filter(q => q.type === "coup");
   if (cp.length > 1) g += `<polyline class="trace" points="${cp.map(q => f(q.X) + "," + f(q.Y)).join(" ")}"/>`;
   for (let j = 0; j < cp.length - 1; j++) {
@@ -390,24 +455,29 @@ function planSvg(p, i) {
   });
 
   const bar = [10, 20, 50, 100, 200, 500].filter(v => v * s <= 110).pop() || 10, x2 = f(12 + bar * s);
-  g += `<line class="echelle" x1="12" y1="18" x2="${x2}" y2="18"/><line class="echelle" x1="12" y1="14" x2="12" y2="22"/>`
+  g += `<line class="echelle-fond" x1="12" y1="18" x2="${x2}" y2="18"/>`
+    + `<line class="echelle" x1="12" y1="18" x2="${x2}" y2="18"/><line class="echelle" x1="12" y1="14" x2="12" y2="22"/>`
     + `<line class="echelle" x1="${x2}" y1="14" x2="${x2}" y2="22"/><text class="lbl gauche" x="12" y="11">${bar} m</text>`;
   if (!tourne) g += `<text class="lbl droite" x="${W - 12}" y="14">N ↑</text>`;
 
-  return { vide: false, tourne, longueur,
+  return { vide: false, tourne, carte: !!CH,
+    longueur: tourne && T && G ? distanceM(T.lat, T.lng, G.lat, G.lng) : null,
     html: `<svg class="plan" viewBox="0 0 ${W} ${H}" role="img" aria-label="Plan du trou ${n}">${g}</svg>` };
 }
 
 function cartePlan(p, i) {
   const n = i + 1, pl = planSvg(p, i);
-  const lib = pt => pt ? (pt.acc != null ? "✓ ±" + pt.acc + " m" : "✓ catalogue") : "à relever";
-  const legende = pl.tourne ? `Tee à gauche, green à droite · tee → green ≈ ${Math.round(pl.longueur)} m (GPS).`
+  const lib = pt => pt ? (pt.acc != null ? "✓ ±" + pt.acc + " m" : pt.src === "osm" ? "✓ carte" : "✓ catalogue") : "à relever";
+  const orient = pl.tourne ? `Tee à gauche, green à droite · tee → green ≈ ${Math.round(pl.longueur)} m.`
     : "Nord en haut : relève le tee et le green pour orienter le trou.";
+  const mention = pl.carte
+    ? ` Contours : © contributeurs <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> (sans relief ni arbres).`
+    : " Schéma indicatif, sans relief ni obstacles.";
   const dg = ui.distGreen && ui.distGreen.trou === i
     ? `<p class="note"><b>Green à ≈ ${Math.round(ui.distGreen.d)} m</b> depuis l'endroit où tu étais au moment du calcul.</p>` : "";
   return `<section class="carte"><h2>Plan du trou</h2>
     ${pl.html}
-    ${pl.vide ? "" : `<p class="note">${legende} Schéma indicatif, sans relief ni obstacles.</p>`}
+    ${pl.vide ? "" : `<p class="note">${orient}${mention}</p>`}
     <div class="rangee trois">
       <button class="btn secondaire" data-action="relever" data-v="tee">Relever le tee<br><small>${lib(pointTrou(p.golfId, n, "tee"))}</small></button>
       <button class="btn secondaire" data-action="relever" data-v="green">Relever le green<br><small>${lib(pointTrou(p.golfId, n, "green"))}</small></button>
@@ -418,9 +488,32 @@ function cartePlan(p, i) {
 
 function carteReleves() {
   return `<section class="carte"><h2>Relevés GPS</h2>
-    <p class="note">Pour dessiner et mesurer le trou : place-toi sur le tee et appuie sur « Relever le tee », puis fais de même au centre du green. « Copier les positions relevées » permet ensuite de les ajouter au catalogue.</p>
+    <p class="note">Quand la carte du golf existe, le tee et le green en viennent déjà. Pour les corriger ou les compléter : place-toi sur le tee et appuie sur « Relever le tee », puis fais de même au centre du green. Tes relevés passent avant ceux de la carte. « Copier les positions relevées » permet ensuite de les ajouter au catalogue.</p>
     <button class="lien" data-action="copierReleves">Copier les positions relevées</button>
     <pre class="recap" id="recap-pos" style="display:none"></pre></section>`;
+}
+
+async function chargerContours(id) {
+  const c = id && catGolf(id);
+  if (!c || !c.contours || contoursEnCours.has(id)) return;
+  contoursEnCours.add(id);
+  try {
+    const r = await fetch(c.contours, { cache: "no-cache" });
+    if (!r.ok) return;
+    const j = await r.json();
+    if (!j || !Array.isArray(j.trous) || !Array.isArray(j.formes) || !Array.isArray(j.limite)) return;
+    CONTOURS[id] = j;
+    try { localStorage.setItem(CLE_CONTOURS, JSON.stringify(CONTOURS)); } catch (e) {}
+    const a = document.activeElement;
+    if (!a || a === document.body) render();
+  } catch (e) { /* hors ligne : on garde les contours déjà enregistrés */ }
+  finally { contoursEnCours.delete(id); }
+}
+// Contours du golf choisi et de la partie en cours
+function prechargerContours() {
+  const g = golfCourant() || listeGolfs()[0];
+  if (g) chargerContours(g.id);
+  if (S.partie) chargerContours(S.partie.golfId);
 }
 
 // Renvoie true si le catalogue a pu être chargé
@@ -434,6 +527,7 @@ async function chargerCatalogue() {
     sauver();
     const a = document.activeElement;
     if (!a || a === document.body) render();
+    prechargerContours();
     return true;
   } catch (e) { return false; /* hors ligne : on garde le catalogue déjà enregistré */ }
 }
@@ -813,7 +907,7 @@ const ACTIONS = {
       const p = await position();
       const l = avec.map(g => ({ g, d: distanceM(p.coords.latitude, p.coords.longitude, g.lat, g.lng) })).sort((a, b) => a.d - b.d)[0];
       const km = l.d / 1000;
-      if (km <= 30) { S.golfId = l.g.id; sauver(); ui.proche = `Le plus proche : ${l.g.nom} (${fmt(km)} km). Tu peux en choisir un autre.`; }
+      if (km <= 30) { S.golfId = l.g.id; sauver(); prechargerContours(); ui.proche = `Le plus proche : ${l.g.nom} (${fmt(km)} km). Tu peux en choisir un autre.`; }
       else ui.proche = `Aucun golf enregistré à moins de 30 km (le plus proche : ${l.g.nom}, ${fmt(km, 0)} km).`;
     } catch (e) {
       const c = e && e.code;
@@ -838,6 +932,7 @@ const ACTIONS = {
       trouActif: 0, ressenti: "", priorite: "", notes: ""
     };
     ui.clubChoisi = null; S.vue = "partie"; sauver(); render(true);
+    prechargerContours();
   },
   reprendre() { S.vue = "partie"; sauver(); render(true); },
 
@@ -944,7 +1039,7 @@ document.addEventListener("input", e => {
 document.addEventListener("change", e => {
   const f = e.target.dataset && e.target.dataset.f;
   if (!f) return;
-  if (f === "golfId") { S.golfId = e.target.value; ui.proche = ""; sauver(); render(); }
+  if (f === "golfId") { S.golfId = e.target.value; ui.proche = ""; sauver(); render(); prechargerContours(); }
 });
 
 render();
