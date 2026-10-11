@@ -449,14 +449,12 @@ function vueAccueil() {
   } else {
     const options = listeGolfs().map(x => `<option value="${esc(x.id)}" ${x.id === S.golfId ? "selected" : ""}>${esc(x.nom)}</option>`).join("");
     h += `<div class="champ"><label for="sel-golf">Golf</label><select id="sel-golf" data-f="golfId">${options}</select></div>
+      <button class="btn secondaire plein" data-action="proche" style="margin-top:10px">Utiliser ma position</button>
+      ${ui.proche ? `<p class="note">${esc(ui.proche)}</p>` : ""}
       <p class="note">${g.nbTrous} trous · ${g.cat ? "fiche du catalogue" : g.lat != null ? "position enregistrée" : "position non enregistrée"}${g.cat && !catTrous(g.id) ? " · pars et distances à renseigner" : ""}</p>
       ${departBloc(g)}
-      ${ui.proche ? `<p class="note">${esc(ui.proche)}</p>` : ""}
       <div class="rangee">
-        <button class="btn secondaire" data-action="proche">Le plus proche de moi</button>
-        <button class="btn secondaire" data-action="ajouterGolf">Ajouter un golf</button>
-      </div>
-      <div class="rangee">
+        <button class="lien" data-action="ajouterGolf">Ajouter un golf</button>
         ${g.cat ? "" : `<button class="lien" data-action="positionGolf">Enregistrer ma position pour ce golf</button>`}
         ${g.cat ? "" : `<button class="lien danger" data-action="supprimerGolf">Supprimer ce golf</button>`}
       </div>`;
@@ -705,6 +703,7 @@ const ACTIONS = {
       ui.proche = "Aucun golf n'a de position enregistrée. Utilise « Enregistrer ma position pour ce golf » une fois sur place.";
       render(); return;
     }
+    ui.proche = "Recherche de ta position…"; render();
     try {
       const p = await position();
       const l = avec.map(g => ({ g, d: distanceM(p.coords.latitude, p.coords.longitude, g.lat, g.lng) })).sort((a, b) => a.d - b.d)[0];
@@ -712,7 +711,11 @@ const ACTIONS = {
       if (km <= 30) { S.golfId = l.g.id; sauver(); ui.proche = `Le plus proche : ${l.g.nom} (${fmt(km)} km). Tu peux en choisir un autre.`; }
       else ui.proche = `Aucun golf enregistré à moins de 30 km (le plus proche : ${l.g.nom}, ${fmt(km, 0)} km).`;
     } catch (e) {
-      ui.proche = e && e.code === 1 ? "Localisation refusée : choisis ton golf à la main." : "Position indisponible : choisis ton golf à la main.";
+      const c = e && e.code;
+      ui.proche = c === 1 ? "Localisation refusée pour Safari : autorise-la dans les Réglages de l'iPhone, ou choisis ton golf dans la liste."
+        : c === 3 ? "Délai dépassé : le signal GPS est faible. Réessaie à l'extérieur, ou choisis ton golf dans la liste."
+        : c === 2 ? "Position introuvable : vérifie que le service de localisation est activé sur l'iPhone, ou choisis ton golf dans la liste."
+        : "Localisation indisponible sur cet appareil : choisis ton golf dans la liste.";
     }
     render();
   },
