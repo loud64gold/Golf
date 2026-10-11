@@ -268,6 +268,7 @@ function departBloc(g) {
   const deps = departsDe(g.id);
   if (!deps.length) return "";
   const cur = departChoisi(g.id), L = longueurDepart(g.id, cur), P = parTotal(g.id);
+  if (deps.length === 1) return `<div class="champ"><p class="note">Départ ${esc(deps[0])}${L != null ? " · " + L + " m" : ""} · par ${P}</p></div>`;
   const lib = d => d.charAt(0).toUpperCase() + d.slice(1);
   return `<div class="champ"><label>Départ</label><div class="segment wrap">${deps.map(d =>
       `<button data-action="depart" data-v="${esc(d)}" class="${d === cur ? "on" : ""}">${esc(lib(d))}</button>`).join("")}</div>
