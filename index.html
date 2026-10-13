@@ -747,15 +747,7 @@ function vuePartie() {
       <div class="score-trou">
         <div><div class="gros">${st.n}</div><div class="sous">${pluriel(st.n, "coup")} · ${pluriel(st.putts, "putt")}</div></div>
         <div class="sous">${st.n ? (st.diff === 0 ? "Au par" : signe(st.diff) + " par rapport au par") : ""}</div>
-      </div>${liste}</section>
-    <section class="carte"><h2>Ce trou</h2>
-      <div class="champ"><label>Par</label><div class="segment">
-        ${[3, 4, 5, 6].map(v => `<button data-action="par" data-v="${v}" class="${t.par === v ? "on" : ""}">${v}</button>`).join("")}
-      </div></div>
-      <div class="champ"><label for="dist">Distance (m)</label>
-        <input type="number" id="dist" inputmode="numeric" data-f="distance" value="${esc(t.distance)}" placeholder="Distance"></div>
-      <p class="note">${catTrous(p.golfId) ? "Par et distance viennent du catalogue (départ " + esc(p.depart || "") + ") ; tes modifications ne valent que pour cette partie." : "Par et distance sont mémorisés pour ce golf."}</p></section>
-    ${carteReleves()}`;
+      </div>${liste}</section>`;
 }
 
 function barres(lignes) {
