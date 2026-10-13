@@ -429,7 +429,8 @@ function planSvg(p, i) {
     };
     const sansFw = !Cc.formes.some(x => x.t === "fw" && x.n === n);
     if (sansFw && COULOIR_M > 0) g += `<polyline class="couloir" fill="none" stroke-width="${f(COULOIR_M * s)}" points="${CH.ligne.map(sv).join(" ")}"/>`;
-    g += couche("fw", "fw") + couche("tee", "zt") + couche("gr", "zg") + couche("wa", "eau") + couche("bk", "bk");
+    const eaux = Cc.formes.filter(x => x.t === "wa" && x.r[0] && visible(x.r[0])).map(x => `<path class="eau" d="${chemin(x.r)}"/>`).join("");
+    g += couche("fw", "fw") + couche("tee", "zt") + couche("gr", "zg") + eaux + couche("bk", "bk");
     // sans fairway dans les données OSM : on trace la ligne de jeu du trou (axe tee → green) pour lire le parcours
     if (sansFw) g += `<polyline class="ligne-jeu" fill="none" points="${CH.ligne.map(sv).join(" ")}"/>`
       + CH.ligne.slice(1, -1).map(ll => { const [px, py] = sv(ll).split(","); return `<circle class="coude" cx="${px}" cy="${py}" r="2.8"/>`; }).join("");
@@ -466,9 +467,10 @@ function planSvg(p, i) {
   });
 
   const bar = [10, 20, 50, 100, 200, 500].filter(v => v * s <= 110).pop() || 10, x2 = f(12 + bar * s);
-  g += `<line class="echelle-fond" x1="12" y1="18" x2="${x2}" y2="18"/>`
-    + `<line class="echelle" x1="12" y1="18" x2="${x2}" y2="18"/><line class="echelle" x1="12" y1="14" x2="12" y2="22"/>`
-    + `<line class="echelle" x1="${x2}" y1="14" x2="${x2}" y2="22"/><text class="lbl gauche" x="12" y="11">${bar} m</text>`;
+  const ye = H - 12;
+  g += `<line class="echelle-fond" x1="12" y1="${ye}" x2="${x2}" y2="${ye}"/>`
+    + `<line class="echelle" x1="12" y1="${ye}" x2="${x2}" y2="${ye}"/><line class="echelle" x1="12" y1="${ye - 4}" x2="12" y2="${ye + 4}"/>`
+    + `<line class="echelle" x1="${x2}" y1="${ye - 4}" x2="${x2}" y2="${ye + 4}"/><text class="lbl gauche" x="12" y="${ye - 7}">${bar} m</text>`;
   if (!tourne) g += `<text class="lbl droite" x="${W - 12}" y="14">N ↑</text>`;
 
   return { vide: false, tourne, carte: !!CH,
