@@ -481,16 +481,13 @@ function planSvg(p, i) {
 function cartePlan(p, i) {
   const n = i + 1, pl = planSvg(p, i);
   const lib = pt => pt ? (pt.acc != null ? "✓ ±" + pt.acc + " m" : pt.src === "osm" ? "✓ carte" : "✓ catalogue") : "à relever";
-  const orient = pl.tourne ? `Tee à gauche, green à droite · tee → green ≈ ${Math.round(pl.longueur)} m.`
-    : "Nord en haut : relève le tee et le green pour orienter le trou.";
   const mention = pl.carte
-    ? ` Contours : © contributeurs <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> (sans relief ni arbres).`
-    : " Schéma indicatif, sans relief ni obstacles.";
+    ? `© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>` : "";
   const dg = ui.distGreen && ui.distGreen.trou === i
     ? `<p class="note"><b>Green à ≈ ${Math.round(ui.distGreen.d)} m</b> depuis l'endroit où tu étais au moment du calcul.</p>` : "";
   return `<section class="carte"><h2>Plan du trou</h2>
     ${pl.html}
-    ${pl.vide ? "" : `<p class="note">${orient}${mention}</p>`}
+    ${pl.vide || !mention ? "" : `<p class="note">${mention}</p>`}
     <div class="rangee trois">
       <button class="btn secondaire" data-action="relever" data-v="tee">Relever le tee<br><small>${lib(pointTrou(p.golfId, n, "tee"))}</small></button>
       <button class="btn secondaire" data-action="relever" data-v="green">Relever le green<br><small>${lib(pointTrou(p.golfId, n, "green"))}</small></button>
@@ -740,8 +737,7 @@ function vuePartie() {
     <div class="pastilles">${pastilles}</div>
     ${refus}
     <section class="carte"><h2>Quel club ?</h2>${prec}<div class="grille-clubs">${boutons}</div>
-      <button class="btn principal plein" style="margin-top:12px" data-action="valider" ${choisi ? "" : "disabled"}>Valider le coup${choisi ? " · " + esc(choisi) : ""}</button>
-      <p class="note">Choisis ton club, puis appuie sur « Valider le coup » à côté de ta balle, avant de frapper : ta position est enregistrée et indique où est tombé le coup précédent.</p></section>
+      <button class="btn principal plein" style="margin-top:12px" data-action="valider" ${choisi ? "" : "disabled"}>Valider le coup${choisi ? " · " + esc(choisi) : ""}</button></section>
     ${cartePlan(p, i)}
     <section class="carte">
       <div class="score-trou">
