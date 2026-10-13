@@ -142,6 +142,10 @@
   .plan .zt { fill: #DCEAC0; stroke: #8FA486; stroke-width: 0.8; }
   .plan .zg { fill: #E4F1C9; stroke: #6F8A66; stroke-width: 1; }
   .plan .bk { fill: #EADFBE; stroke: #C4B386; stroke-width: 0.8; fill-rule: evenodd; }
+  .plan .eau { fill: #BCD8E4; stroke: #7FA9BE; stroke-width: 0.8; fill-rule: evenodd; }
+  .plan .couloir { stroke: #CADEB1; stroke-linejoin: round; stroke-linecap: round; opacity: 0.85; }
+  .plan .ligne-jeu { stroke: #3E5238; stroke-width: 1.8; stroke-dasharray: 6 4; stroke-linejoin: round; opacity: 0.9; }
+  .plan .coude { fill: #3E5238; stroke: #fff; stroke-width: 1; }
   .plan .ext { opacity: 0.5; }
   .plan .axe { stroke: var(--sauge-fonce); stroke-width: 1.5; stroke-dasharray: 5 4; opacity: 0.7; }
   .plan .trace { fill: none; stroke: var(--terracotta); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
@@ -220,6 +224,8 @@ const PENALITE = "Pénalité";
 const estPutt = c => /putter/i.test(c);
 
 // Clubs proposés dans « Mes clubs » (ordre = ordre d'affichage sur la page Partie)
+// Largeur (m) du couloir schématique tracé le long de la ligne de jeu OSM quand le fairway n'est pas cartographié (0 = aucun)
+const COULOIR_M = 0;
 const CLUBS_GROUPES = [
   ["Bois", ["Driver", "Bois 3", "Bois 5"]],
   ["Hybrides", ["Hybride", "Hybride 3", "Hybride 4", "Hybride 5"]],
@@ -421,7 +427,12 @@ function planSvg(p, i) {
       return L.filter(x => x.n !== n).map(x => `<path class="${cls} ext" d="${chemin(x.r)}"/>`).join("")
         + L.filter(x => x.n === n).map(x => `<path class="${cls}" d="${chemin(x.r)}"/>`).join("");
     };
-    g += couche("fw", "fw") + couche("tee", "zt") + couche("gr", "zg") + couche("bk", "bk");
+    const sansFw = !Cc.formes.some(x => x.t === "fw" && x.n === n);
+    if (sansFw && COULOIR_M > 0) g += `<polyline class="couloir" fill="none" stroke-width="${f(COULOIR_M * s)}" points="${CH.ligne.map(sv).join(" ")}"/>`;
+    g += couche("fw", "fw") + couche("tee", "zt") + couche("gr", "zg") + couche("wa", "eau") + couche("bk", "bk");
+    // sans fairway dans les données OSM : on trace la ligne de jeu du trou (axe tee → green) pour lire le parcours
+    if (sansFw) g += `<polyline class="ligne-jeu" fill="none" points="${CH.ligne.map(sv).join(" ")}"/>`
+      + CH.ligne.slice(1, -1).map(ll => { const [px, py] = sv(ll).split(","); return `<circle class="coude" cx="${px}" cy="${py}" r="2.8"/>`; }).join("");
   } else {
     g += `<rect class="fond" x="0" y="0" width="${W}" height="${H}" rx="10"/>`;
     if (tourne) {
